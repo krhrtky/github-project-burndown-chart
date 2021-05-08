@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel>
-      <module name="github-project-burndown-chart-api" target="11" />
-      <module name="github-project-burndown-chart-api.main" target="11" />
-      <module name="github-project-burndown-chart-api.test" target="11" />
-    </bytecodeTargetLevel>
+    <annotationProcessing>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-configuration-processor/2.4.5/adadfe2ded50ef04fcc50c66d9694230c7dc021b/spring-boot-configuration-processor-2.4.5.jar" />
+        </processorPath>
+        <module name="github-project-burndown-chart-api.main" />
+      </profile>
+    </annotationProcessing>
   </component>
 </project>
