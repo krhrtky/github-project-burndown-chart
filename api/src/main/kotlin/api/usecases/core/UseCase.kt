@@ -2,6 +2,6 @@ package api.usecases.core
 
 import arrow.core.Either
 
-interface UseCase<InputData, OutputData> {
-    fun handle(inputData: InputData): Either<Exception, OutputData>
+interface UseCase<InputData, OutputData, E: Exception> {
+    fun handle(inputData: InputData): Either<E, OutputData>
 }

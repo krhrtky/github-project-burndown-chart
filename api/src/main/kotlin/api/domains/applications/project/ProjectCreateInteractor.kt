@@ -20,7 +20,10 @@ class ProjectCreateInteractor(
 ): ProjectCreateUseCase {
     private val projectService: ProjectService = ProjectService(projectRepository)
 
-    override fun handle(inputData: ProjectCreateInputData): Either<Exception, ProjectCreateOutPutData> {
+    override fun handle(inputData: ProjectCreateInputData): Either<
+            ProjectAlreadyExistsException,
+            ProjectCreateOutPutData
+            > {
         val uuid = UUID.randomUUID().toString()
         val newProject = Project(
             id = Id(uuid),
