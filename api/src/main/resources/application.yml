@@ -1,0 +1,14 @@
+spring:
+  devtools:
+    remote:
+      restart:
+        enabled: true
+    livereload:
+      enabled: true
+  cloud:
+    gcp:
+      firestore:
+        emulator:
+          enabled: true
+        host-port: localhost:8081
+
