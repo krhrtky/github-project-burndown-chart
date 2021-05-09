@@ -25,10 +25,14 @@ extra["springCloudGcpVersion"] = "2.0.0"
 extra["springCloudVersion"] = "2020.0.2"
 
 dependencies {
+    implementation(platform("io.arrow-kt:arrow-stack:0.13.2"))
+    implementation("io.arrow-kt:arrow-core")
+    implementation("io.arrow-kt:arrow-fx-coroutines")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.google.cloud:spring-cloud-gcp-starter")
+    implementation("com.google.cloud:spring-cloud-gcp-starter-data-firestore")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -38,6 +42,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("com.ninja-squad:springmockk:2.0.1")
+    testImplementation("io.kotest:kotest-runner-junit5:4.5.0")
+    testImplementation("io.mockk:mockk:1.11.0")
+    testImplementation("io.kotest:kotest-extensions-spring:4.4.3")
 }
 
 dependencyManagement {
@@ -52,6 +60,11 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "11"
     }
+}
+
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+    jvmTarget = "11"
 }
 
 tasks.withType<Test> {
