@@ -1,8 +1,8 @@
 package api.domains.applications.project
 
-import api.domains.models.project.Id
 import api.domains.models.project.Organization
 import api.domains.models.project.Project
+import api.domains.models.project.ProjectId
 import api.domains.models.project.ProjectNumber
 import api.domains.models.project.ProjectRepository
 import api.domains.models.project.ProjectService
@@ -13,6 +13,7 @@ import api.usecases.project.create.ProjectCreateUseCase
 import arrow.core.Either
 import java.util.UUID
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
 
 @Service
 class ProjectCreateInteractor(
@@ -20,24 +21,24 @@ class ProjectCreateInteractor(
 ): ProjectCreateUseCase {
     private val projectService: ProjectService = ProjectService(projectRepository)
 
-    override fun handle(inputData: ProjectCreateInputData): Either<
+    override fun handle(inputData: ProjectCreateInputData): Mono<Either<
             ProjectAlreadyExistsException,
             ProjectCreateOutPutData
-            > {
+            >> {
         val uuid = UUID.randomUUID().toString()
         val newProject = Project(
-            id = Id(uuid),
+            projectId = ProjectId(uuid),
             organization = Organization(inputData.organization),
             projectNumber = ProjectNumber(inputData.projectNumber),
             tasks = emptyList(),
         )
 
-        if (projectService.isExists(newProject)) {
-            return Either.Left(ProjectAlreadyExistsException())
+        if (projectService.isDuplicated(newProject)) {
+            return Mono.just(Either.Left(ProjectAlreadyExistsException()))
         }
 
         projectRepository.store(newProject)
 
-        return Either.Right(ProjectCreateOutPutData(uuid))
+        return Mono.just(Either.Right(ProjectCreateOutPutData(uuid)))
     }
 }

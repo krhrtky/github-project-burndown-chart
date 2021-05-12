@@ -1,18 +1,18 @@
 package api.domains.models.project
 
-import api.domains.models.task.Id as TaskId
+import api.domains.models.task.TaskId as TaskId
 import java.lang.IllegalStateException
 
 class ProjectPokoBuilder: ProjectNotification {
-    private var id: Id? = null
+    private var projectId: ProjectId? = null
     private var projectNumber: ProjectNumber? = null
     private var organization: Organization? = null
     private var tasks: List<TaskId>? = null
 
     fun build(): ProjectData {
-        if (this.id != null && this.projectNumber != null && this.organization != null && tasks != null) {
+        if (this.projectId != null && this.projectNumber != null && this.organization != null && tasks != null) {
             return ProjectData(
-                id = this.id!!.value,
+                id = this.projectId!!.value,
                 projectNumber = this.projectNumber!!.value,
                 organization = this.organization!!.value,
                 tasks = this.tasks!!.map { it.value }
@@ -22,8 +22,8 @@ class ProjectPokoBuilder: ProjectNotification {
         throw IllegalStateException()
     }
 
-    override fun setId(id: Id) {
-        this.id = id
+    override fun setId(projectId: ProjectId) {
+        this.projectId = projectId
     }
 
     override fun setProjectNumber(projectNumber: ProjectNumber) {

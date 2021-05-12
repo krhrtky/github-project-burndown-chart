@@ -1,12 +1,12 @@
 package api.gateways.project
 
-import api.domains.models.project.Id
 import api.domains.models.project.Organization
 import api.domains.models.project.Project
+import api.domains.models.project.ProjectId
 import api.domains.models.project.ProjectNumber
 import api.domains.models.project.ProjectPokoBuilder
 import api.domains.models.project.ProjectRepository
-import api.domains.models.task.Id as TaskId
+import api.domains.models.task.TaskId
 import com.google.cloud.firestore.Firestore
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
@@ -53,12 +53,24 @@ class FirestoreProjectRepository(
         return maybeDoc.map {
             val doc = it.toObject(DocumentData::class.java)
             Project(
-                id = Id(it.id),
+                projectId = ProjectId(it.id),
                 organization = Organization(doc.organization),
                 projectNumber = ProjectNumber(doc.projectNumber),
                 tasks = doc.tasks.map { taskId -> TaskId(taskId) },
             )
         }.first()
+    }
+
+    override fun findById(projectId: ProjectId): Project? {
+        val documentSnapshot = collection.document(projectId.value).get().get()
+
+        val doc = documentSnapshot.toObject(DocumentData::class.java) ?: return null
+        return Project(
+            projectId = projectId,
+            organization = Organization(doc.organization),
+            projectNumber = ProjectNumber(doc.projectNumber),
+            tasks = doc.tasks.map { taskId -> TaskId(taskId) },
+        )
     }
 }
 

@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
+import reactor.core.publisher.Mono
 
 @WebFluxTest
 @Import(SecurityConfig::class)
@@ -29,7 +30,7 @@ class ProjectControllerTest(
         every {
             projectCreateUseCase
                 .handle(ProjectCreateInputData("test-organization", 1))
-        } returns Either.Right(ProjectCreateOutPutData("created-project-id"))
+        } returns Mono.just(Either.Right(ProjectCreateOutPutData("created-project-id")))
 
         webTestClient
             .post()

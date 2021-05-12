@@ -1,21 +1,23 @@
 package api.extention
 
-fun Int.isCompositeNumber(): Boolean {
-    if(
-        this < 0 &&
-        this == 1 &&
-        this == 2
-    ) {
-        return false
-    }
+fun Int.isFibonacci(): Boolean {
+    var first = 0
+    var second = 1
 
-    for(i in Array((this - 3) / 4) {
-        it * 2 + 3
-    }) {
-        if(this % i == 0 && this != i) {
-            return false
+    if (this == 0) {
+        return true
+    }
+    var num = 0
+
+    while (this > num) {
+        num = first + second
+        first = second
+        second = num
+
+        if (num == this) {
+            return true
         }
     }
 
-    return true
+    return false
 }
