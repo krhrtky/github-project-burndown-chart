@@ -16,7 +16,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Mono
 
-@WebFluxTest
+@WebFluxTest(controllers = [ProjectController::class])
 @Import(SecurityConfig::class)
 @AutoConfigureWebTestClient
 class ProjectControllerTest(
