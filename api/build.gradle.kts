@@ -30,6 +30,7 @@ dependencies {
     implementation("io.arrow-kt:arrow-fx-coroutines")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.google.cloud:spring-cloud-gcp-starter")
     implementation("com.google.cloud:spring-cloud-gcp-starter-data-firestore")

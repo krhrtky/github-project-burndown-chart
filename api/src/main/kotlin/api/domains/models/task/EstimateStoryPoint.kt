@@ -1,11 +1,11 @@
 package api.domains.models.task
 
-import api.extention.isCompositeNumber
+import api.extention.isFibonacci
 
 data class EstimateStoryPoint(val value: Int) {
     init {
-        if(value.isCompositeNumber()) {
-            throw IllegalArgumentException("${this.javaClass.simpleName} must not be prime number.")
+        if(!value.isFibonacci()) {
+            throw IllegalArgumentException("${this.javaClass.simpleName} must be fibonacci. got $value")
         }
     }
 }
