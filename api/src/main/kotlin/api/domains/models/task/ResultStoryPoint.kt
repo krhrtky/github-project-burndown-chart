@@ -1,6 +1,6 @@
 package api.domains.models.task
 
-import api.extention.isFibonacci
+import api.domains.models.types.isFibonacci
 
 data class ResultStoryPoint(val value: Int) {
     init {

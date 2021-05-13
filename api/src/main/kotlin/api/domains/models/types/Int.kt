@@ -1,4 +1,4 @@
-package api.extention
+package api.domains.models.types
 
 fun Int.isFibonacci(): Boolean {
     var first = 0
