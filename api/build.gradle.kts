@@ -31,6 +31,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springdoc:springdoc-openapi-webflux-ui:1.5.8")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.5.8")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.google.cloud:spring-cloud-gcp-starter")
     implementation("com.google.cloud:spring-cloud-gcp-starter-data-firestore")
