@@ -10,12 +10,16 @@ class ProjectPokoBuilder: ProjectNotification {
     private var tasks: List<TaskId>? = null
 
     fun build(): ProjectData {
-        if (this.projectId != null && this.projectNumber != null && this.organization != null && tasks != null) {
+        val projectId = this.projectId
+        val projectNumber = this.projectNumber
+        val organization = this.organization
+        val tasks = this.tasks
+        if(projectId != null && projectNumber != null && organization != null && tasks != null) {
             return ProjectData(
-                id = this.projectId!!.value,
-                projectNumber = this.projectNumber!!.value,
-                organization = this.organization!!.value,
-                tasks = this.tasks!!.map { it.value }
+                id = projectId.value,
+                projectNumber = projectNumber.value,
+                organization = organization.value,
+                tasks = tasks.map { it.value }
             )
         }
 
