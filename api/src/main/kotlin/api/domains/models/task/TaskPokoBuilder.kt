@@ -11,17 +11,28 @@ class TaskPokoBuilder : TaskNotification {
     private var finishedAt: FinishedAt? = null
 
     fun build(): TaskData {
-        if (this.taskId != null && this.projectCardId != null && this.estimateStoryPoint != null) {
+        val taskId = this.taskId
+        val projectCardId = this.projectCardId
+        val estimateStoryPoint = this.estimateStoryPoint
+        val resultStoryPoint = this.resultStoryPoint
+        val finishedAt = this.finishedAt
+
+        if (taskId != null && projectCardId != null && estimateStoryPoint != null) {
             return TaskData(
-                taskId = this.taskId!!.value,
-                projectCardId = this.projectCardId!!.value,
-                estimateStoryPoint = this.estimateStoryPoint!!.value,
-                resultStoryPoint = this.resultStoryPoint?.value,
-                finishedAt = this.finishedAt?.value,
+                taskId = taskId.value,
+                projectCardId = projectCardId.value,
+                estimateStoryPoint = estimateStoryPoint.value,
+                resultStoryPoint = resultStoryPoint?.value,
+                finishedAt = finishedAt?.value,
             )
         }
 
         throw IllegalStateException()
+    }
+
+    fun extract(task: Task): TaskPokoBuilder {
+        task.notify(this)
+        return this
     }
 
     override fun setTaskId(taskId: TaskId) {

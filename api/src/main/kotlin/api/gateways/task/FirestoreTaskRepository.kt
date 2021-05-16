@@ -36,6 +36,25 @@ class FirestoreTaskRepository(
             )
     }
 
+    override fun findById(taskId: TaskId): Task? =
+        collection
+            .document(taskId.value)
+            .get()
+            .get()
+            .toObject(DocumentData::class.java)?.let {
+                Task(
+                    taskId = taskId,
+                    projectCardId = ProjectCardId(it.projectCardId),
+                    estimateStoryPoint = EstimateStoryPoint(it.estimateStoryPoint),
+                    resultStoryPoint = it.resultStoryPoint?.let {
+                            resultStoryPoint -> ResultStoryPoint(resultStoryPoint)
+                    },
+                    finishedAt = it.finishedAt?.let {
+                            finishedAt -> FinishedAt(finishedAt)
+                    }
+                )
+            }
+
     override fun findByIds(taskIds: List<TaskId>): List<Task> =
         if (taskIds.isEmpty()) emptyList()
         else collection
