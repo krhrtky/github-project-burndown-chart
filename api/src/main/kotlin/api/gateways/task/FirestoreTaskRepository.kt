@@ -20,9 +20,9 @@ class FirestoreTaskRepository(
     private val collection = firestore.collection("task")
 
     override fun store(task: Task) {
-        val builder = TaskPokoBuilder()
-        task.notify(builder)
-        val taskData = builder.build()
+        val taskData = TaskPokoBuilder()
+            .extract(task)
+            .build()
 
         collection
             .document(taskData.taskId)
