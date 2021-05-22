@@ -1,94 +1,79 @@
 import React, { useState, useEffect, useContext, createContext } from 'react';
-import Router from 'next/router';
-import { firebase } from './Firebase';
+import { signInWithPopup, GithubAuthProvider, getAuth, User } from "@firebase/auth";
+import { signIn as signInAction, signOut as signOutAction, selectUser } from "@/store/user/userSlice";
+import {useDispatch, useSelector} from "react-redux";
 
-type Await<T> = T extends Promise<infer PT> ? PT : never;
-
-const authContext = createContext<ReturnType<typeof useFirebaseAuth> | null>(null);
+// @ts-ignore
+const authContext = createContext<ReturnType<typeof useFirebaseAuth>>(null);
 
 export const AuthProvider = ({ children }) => {
-    const auth = useFirebaseAuth();
-    return <authContext.Provider value={auth}>{children}</authContext.Provider>;
+  const firebaseAuth = useFirebaseAuth();
+  return <authContext.Provider value={firebaseAuth}>{children}</authContext.Provider>;
 }
 
 export const useAuth = () => {
-    return useContext(authContext);
+  return useContext(authContext);
 };
 
 const useFirebaseAuth = () => {
-    const [user, setUser] = useState<Await<ReturnType<typeof formatUser>>>(null);
-    const [loading, setLoading] = useState(true);
+  const auth = getAuth();
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
 
-    const handleUser = async (rawUser?: firebase.User) => {
-        if (rawUser != null) {
-            const user = await formatUser(rawUser);
-            const { token, ...userWithoutToken } = user;
+  const signIn = async () => {
+    setLoading(true);
+    const provider = new GithubAuthProvider();
+    provider.addScope("repo")
+    provider.addScope("read:org")
+    provider.addScope("user")
 
-            setUser(user);
+    const result = await signInWithPopup(auth, provider);
 
-            setLoading(false);
-            return user;
-        } else {
-            setUser(null);
-            setLoading(false);
-            return null;
+    if (result) {
+      const user = result.user;
+      const credential = GithubAuthProvider.credentialFromResult(result);
+      dispatch(
+        signInAction({
+          ...await formatUser(user),
+          accessToken: (credential?.accessToken == null) ? "" : credential.accessToken,
+        })
+      );
+    }
+
+    setLoading(false);
+  };
+
+  const signOut = () => auth.signOut();
+
+  useEffect(() => {
+    const unsubscribe = auth
+      .onAuthStateChanged(async maybeUser => {
+        if (maybeUser == null) {
+          dispatch(signOutAction());
         }
-    };
+      });
+    return () => unsubscribe();
+  }, []);
 
-    const signInWithGitHub = (redirect) => {
-        setLoading(true);
-        return firebase
-          .auth()
-          .signInWithPopup(new firebase.auth.GithubAuthProvider())
-          .then(async (response) => {
-              await handleUser(response.user);
-
-              if (redirect) {
-                  await Router.push(redirect);
-              }
-          });
-    };
-
-    const signOut = () => {
-        return firebase
-          .auth()
-          .signOut()
-          .then(() => handleUser(null));
-    };
-
-    useEffect(() => {
-        const unsubscribe = firebase.auth().onIdTokenChanged(handleUser);
-        return () => unsubscribe();
-    }, []);
-
-    const getFreshToken = async () => {
-        const currentUser = firebase.auth().currentUser;
-        if (currentUser) {
-            const token = await currentUser.getIdToken(false);
-            return `${token}`;
-        } else {
-            return '';
-        }
-    };
-
-    return {
-        user,
-        loading,
-        signInWithGitHub,
-        signOut: signOut,
-        getFreshToken,
-    };
+  return {
+    loading,
+    user,
+    signIn,
+    signOut,
+  };
 }
 
-const formatUser = async (user: firebase.User) => {
-    const { token, expirationTime } = await user.getIdTokenResult(true);
-    return {
-        uid: user.uid,
-        email: user.email,
-        name: user.displayName,
-        provider: user.providerData[0].providerId,
-        photoUrl: user.photoURL,
-        token,
-        expirationTime,
-    };
+const formatUser = async (user: User) => {
+  const { token, expirationTime } = await user.getIdTokenResult(true);
+
+  return {
+    uid: user.uid,
+    email: user.email,
+    name: user.displayName,
+    provider: user.providerData[0].providerId,
+    photoUrl: user.photoURL,
+    token,
+    expirationTime,
+  };
 };

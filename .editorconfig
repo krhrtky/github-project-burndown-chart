@@ -296,8 +296,10 @@ ij_editorconfig_space_before_colon = false
 ij_editorconfig_space_before_comma = false
 ij_editorconfig_spaces_around_assignment_operators = true
 
-[{*.ats,*.ts,state}]
-ij_continuation_indent_size = 4
+[{*.ats,*.ts,*.tsx,state}]
+indent_size = 2
+tab_width = 2
+ij_continuation_indent_size = 2
 ij_typescript_align_imports = false
 ij_typescript_align_multiline_array_initializer_expression = false
 ij_typescript_align_multiline_binary_operation = false
@@ -474,7 +476,7 @@ ij_shell_redirect_followed_by_space = false
 ij_shell_switch_cases_indented = false
 ij_shell_use_unix_line_separator = true
 
-[{*.cjs,*.js}]
+[{*.cjs,*.js,*.jsx}]
 indent_size = 2
 tab_width = 2
 ij_continuation_indent_size = 4

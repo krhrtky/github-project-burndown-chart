@@ -1,0 +1,12 @@
+overwrite: true
+schema:
+  - "https://api.github.com/graphql":
+      headers:
+        Authorization: Bearer ${GITHUB_API_TOKEN}
+documents: "src/**/*.graphql"
+generates:
+  src/graphql/graphql.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
