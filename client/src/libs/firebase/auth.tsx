@@ -19,7 +19,7 @@ const useFirebaseAuth = () => {
   const auth = getAuth();
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const signIn = async () => {
     setLoading(true);
