@@ -4,6 +4,8 @@ plugins {
     id("org.springframework.boot") version "2.4.5"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("com.github.johnrengelman.processes") version "0.5.0"
+    id("org.springdoc.openapi-gradle-plugin") version "1.3.2"
     kotlin("jvm") version "1.4.32"
     kotlin("plugin.spring") version "1.4.32"
 }
@@ -73,4 +75,11 @@ compileTestKotlin.kotlinOptions {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+openApi {
+    outputDir.set(file("$buildDir/docs"))
+    outputFileName.set("swagger.json")
+    waitTimeInSeconds.set(10)
+    forkProperties.set("-Dspring.profiles.active=special")
 }
