@@ -16,6 +16,7 @@ module.exports = (env, argv) => {
     output: {
       path: `${__dirname}/dist`,
       filename: '[name].[hash].js',
+      publicPath: "/",
     },
     module: {
       rules: [

@@ -13,7 +13,7 @@ export const Top = () => {
     <>
       <h2>Hello, Everyone.</h2>
       <p>This is a simulated page, you can click anywhere to close it.</p>
-      <Link to="/projects">projects</Link>
+      <Link to="/project/select">projects</Link>
       {
         user.authenticated ? (
           <button onClick={signOut}>signOut</button>

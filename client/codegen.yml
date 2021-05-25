@@ -5,7 +5,7 @@ schema:
         Authorization: Bearer ${GITHUB_API_TOKEN}
 documents: "src/**/*.graphql"
 generates:
-  src/graphql/graphql.tsx:
+  src/generated/graphql/graphql.tsx:
     plugins:
       - "typescript"
       - "typescript-operations"

@@ -1,0 +1,24 @@
+query Organizations($first: Int!, $after: String) {
+  viewer {
+    id
+    __typename
+    organizations(first: $first, after: $after, ) {
+      __typename
+      totalCount
+      pageInfo {
+        startCursor
+        hasNextPage
+        endCursor
+      }
+      edges {
+        cursor
+        node {
+          id
+          __typename
+          name
+          login
+        }
+      }
+    }
+  }
+}

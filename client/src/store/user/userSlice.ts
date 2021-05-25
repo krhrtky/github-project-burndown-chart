@@ -4,7 +4,7 @@ import {Omit} from "react-redux";
 
 export type User = Authenticated | UnAuthenticated;
 
-type Authenticated = {
+export type Authenticated = {
   uid: string;
   email: string | null;
   name: string | null;
@@ -15,7 +15,7 @@ type Authenticated = {
   authenticated: true;
 };
 
-type UnAuthenticated = {
+export type UnAuthenticated = {
   authenticated: false;
 };
 

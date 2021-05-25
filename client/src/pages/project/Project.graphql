@@ -1,0 +1,21 @@
+query Project($login: String!, $first: Int!) {
+  organization(login: $login) {
+    id
+    projects(first: $first) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        cursor
+        node {
+          id
+          name
+          number
+        }
+      }
+    }
+  }
+}

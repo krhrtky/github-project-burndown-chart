@@ -9,8 +9,9 @@ import { CssBaseline, Divider, GeistProvider, Page } from "@geist-ui/react";
 import { Route, Switch} from "react-router-dom";
 import { Top } from "@/pages/Top";
 import {ConnectedRouter} from "connected-react-router";
-import {ProjectsRoot} from "@/pages/projects/ProjectsRoot";
+import {ProjectRoot} from "@/pages/project/ProjectRoot";
 import {PersistGate} from "redux-persist/integration/react";
+import {ProjectsRoot} from "@/pages/projects/ProjectsRoute";
 
 initializeFirebase();
 const cache = new InMemoryCache();
@@ -27,18 +28,23 @@ const App = () => {
           <AuthProvider >
             <GeistProvider>
               <CssBaseline />
-              <Page size="full">
+              <Page size="medium">
                 <Page.Header>
                   <h2>Header</h2>
                 </Page.Header>
-                <Divider/>
+                <Divider y={0}/>
                 <ConnectedRouter history={history}>
                   <Page.Content>
                     <Switch>
                       <Route exact path="/">
                         <Top />
                       </Route>
-                      <ProjectsRoot />
+                      <Route path="/project">
+                        <ProjectRoot />
+                      </Route>
+                      <Route path="/projects">
+                        <ProjectsRoot />
+                      </Route>
                     </Switch>
                   </Page.Content>
                 </ConnectedRouter>

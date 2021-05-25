@@ -1,10 +1,10 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import { ProjectList } from "@/pages/projects/ProjectList";
+import { ProjectList } from "@/pages/project/ProjectList";
 
-export const ProjectsRoot = () => (
+export const ProjectRoot = () => (
   <Switch>
-    <Route exact path="/projects">
+    <Route exact path="/project/select">
       <ProjectList />
     </Route>
   </Switch>

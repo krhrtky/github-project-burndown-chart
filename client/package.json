@@ -6,7 +6,9 @@
   "scripts": {
     "build": "webpack --mode production",
     "dev": "webpack serve --mode development --port 3000",
-    "gql:code:gen": "graphql-codegen --config codegen.yml"
+    "gql:code:gen": "graphql-codegen --config codegen.yml",
+    "gql:code:gen:watch": "graphql-codegen --config codegen.yml -w",
+    "openapi:gen": "openapi -i ../api/build/docs/swagger.json -o ./src/generated/openapi --useUnionTypes"
   },
   "author": "",
   "license": "ISC",
@@ -25,6 +27,9 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.21.4",
+    "@graphql-codegen/typescript": "1.22.0",
+    "@graphql-codegen/typescript-operations": "1.17.16",
+    "@graphql-codegen/typescript-react-apollo": "2.2.4",
     "@types/node": "^15.6.0",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
@@ -35,13 +40,11 @@
     "babel-preset-react-app": "^10.0.0",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
     "html-webpack-plugin": "^5.3.1",
+    "openapi-typescript-codegen": "^0.9.3",
     "ts-loader": "^9.2.1",
     "typescript": "^4.2.4",
     "webpack": "^5.37.1",
     "webpack-cli": "^4.7.0",
-    "webpack-dev-server": "^3.11.2",
-    "@graphql-codegen/typescript": "1.22.0",
-    "@graphql-codegen/typescript-operations": "1.17.16",
-    "@graphql-codegen/typescript-react-apollo": "2.2.4"
+    "webpack-dev-server": "^3.11.2"
   }
 }
