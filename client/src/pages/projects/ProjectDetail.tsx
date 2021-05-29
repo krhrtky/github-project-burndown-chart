@@ -113,6 +113,7 @@ export const ProjectDetail: React.FC = () => {
             key={edge?.node?.id ?? ""}
             onClick={() => setCurrentColumn(cursorMap[edge?.cursor ?? ""])}
             b={currentColumnCursor === cursorMap[edge?.cursor ?? ""]}
+            p
           >
             {edge?.node?.name}
           </Text>
