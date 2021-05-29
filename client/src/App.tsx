@@ -46,11 +46,11 @@ const App = () => {
                         <ProjectsRoot />
                       </Route>
                     </Switch>
-                  </Page.Content>
-                </ConnectedRouter>
-                <Page.Footer>
-                  <h2>Footer</h2>
-                </Page.Footer>
+                    </Page.Content>
+                  </ConnectedRouter>
+                  <Page.Footer style={{ backgroundColor: "white", bottom: 0, zIndex: 1, position: "fixed" }}>
+                    <h2>Footer</h2>
+                  </Page.Footer>
               </Page>
             </GeistProvider>
           </AuthProvider>

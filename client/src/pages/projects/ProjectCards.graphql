@@ -1,0 +1,27 @@
+query ProjectCards($login: String!, $projectNumber: Int!, $columnFirst: Int!, $after: String) {
+  viewer {
+    id
+    __typename
+    organization(login: $login) {
+      project(number: $projectNumber) {
+        name
+        columns(first: $columnFirst, after: $after) {
+          pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            __typename
+          }
+          edges {
+            cursor
+            node {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}

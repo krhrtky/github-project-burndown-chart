@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { useProjectsQuery } from "@/generated/graphql/graphql";
+import { useProjectQuery } from "@/generated/graphql/graphql";
 import {Authenticated} from "@/store/user/userSlice";
 import {Spinner} from "@geist-ui/react";
 import { getApp } from "@firebase/app";
@@ -18,7 +18,7 @@ export const ProjectSelect: React.FC<Props> = ({ login, user }) => {
     projectNumber: number;
     id: string;
   }>>([]);
-  const {loading, data} = useProjectsQuery({
+  const {loading, data} = useProjectQuery({
     variables: {
       login,
       first: 10,

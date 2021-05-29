@@ -3,7 +3,6 @@ query Organizations($first: Int!, $after: String) {
     id
     __typename
     organizations(first: $first, after: $after, ) {
-      __typename
       totalCount
       pageInfo {
         startCursor

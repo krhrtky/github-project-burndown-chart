@@ -1,6 +1,7 @@
 query Project($login: String!, $first: Int!) {
   organization(login: $login) {
     id
+    __typename
     projects(first: $first) {
       pageInfo {
         startCursor
