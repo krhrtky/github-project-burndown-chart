@@ -10,7 +10,7 @@
     ]
   },
   "hosting": {
-    "public": "public",
+    "public": "client/dist",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -21,7 +21,8 @@
         "source": "**",
         "destination": "/index.html"
       }
-    ]
+    ],
+    "postdeploy": "npm run build --prefix client"
   },
   "emulators": {
     "auth": {
