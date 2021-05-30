@@ -1,6 +1,6 @@
 import {useSelector} from "react-redux";
 import {selectUser} from "@/store/user/userSlice";
-import React from "react";
+import React, {useState} from "react";
 import {
   Issue,
   Maybe,
@@ -10,6 +10,7 @@ import {
 } from "@/generated/graphql/graphql";
 import {Badge, Card, Grid, Loading, useTheme } from "@geist-ui/react";
 import ReactMarkdown from "react-markdown";
+import {CreateTaskModal} from "@/pages/projects/Task/CreateTaskModal";
 
 type Props = {
   login: string;
@@ -38,6 +39,13 @@ export const Column: React.FC<Props> = ({
       }
     }
   });
+  const [modalOpening, setModalOpening] = useState<boolean>(false);
+  const closeModal = () => setModalOpening(false);
+  const [selectedCardId, selectCardId] = useState<string>("");
+  const openModal = (cardId: string) => {
+    selectCardId(cardId);
+    setModalOpening(true);
+  }
 
   const nodes = data?.viewer.organization?.project?.columns.nodes ?? []
   const node = nodes[0] ?? null;
@@ -70,26 +78,30 @@ export const Column: React.FC<Props> = ({
   return loading ? (
     <Loading size="large" />
   ) : (
-    <Grid.Container gap={1} justify="flex-start" style={{ overflowY: "auto",
-      maxHeight: "calc(100vh - (16pt * 10) - 65px)",}}>
-      {node == null ? (
-        <div>card not exists</div>
-      ) : node?.cards.nodes?.map(card => (
-        <Grid xs={12} key={card?.id}>
-          <Card
-            key={card?.id}
-            style={{ overflowWrap: "break-word" }}
-            hoverable
-          >
-            {badge(card)}
-            <ReactMarkdown>
-              {title(card) || ""}
-            </ReactMarkdown>
-          </Card>
-        </Grid>
-      ))
-      }
-    </Grid.Container>
+    <>
+      <Grid.Container gap={1} justify="flex-start" style={{ overflowY: "auto",
+        maxHeight: "calc(100vh - (16pt * 10) - 65px)",}}>
+        {node == null ? (
+          <div>card not exists</div>
+        ) : node?.cards.nodes?.map(card => (
+          <Grid xs={12} key={card?.id}>
+            <Card
+              key={card?.id}
+              style={{ overflowWrap: "break-word" }}
+              onClick={() => openModal(card?.id ?? "")}
+              hoverable
+            >
+              {badge(card)}
+              <ReactMarkdown>
+                {title(card) || ""}
+              </ReactMarkdown>
+            </Card>
+          </Grid>
+        ))
+        }
+      </Grid.Container>
+      <CreateTaskModal open={modalOpening} onClose={closeModal} projectCardId={selectedCardId} />
+    </>
   );
 }
 
