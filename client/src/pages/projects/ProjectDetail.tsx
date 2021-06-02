@@ -91,18 +91,6 @@ export const ProjectDetail: React.FC = () => {
     });
   }, [project]);
 
-  const cursorTuple = data?.viewer.organization?.project?.columns.edges?.reduce((prev, current, index) => {
-    if (index === 0) {
-      return prev.concat([[current?.cursor ?? "", null]]);
-    }
-    const lastIndex = index - 1;
-    const lastCursor = prev[lastIndex][0]
-    return prev.concat([[current?.cursor ?? "", lastCursor]]);
-
-  }, [] as [string, string | null][]) ?? [];
-
-  const cursorMap = Object.fromEntries(cursorTuple);
-
   return loading ? (
     <Loading size="large" />
   ) : (
@@ -111,8 +99,8 @@ export const ProjectDetail: React.FC = () => {
         {data?.viewer.organization?.project?.columns.edges?.map(edge => (
           <Text
             key={edge?.node?.id ?? ""}
-            onClick={() => setCurrentColumn(cursorMap[edge?.cursor ?? ""])}
-            b={currentColumnCursor === cursorMap[edge?.cursor ?? ""]}
+            onClick={() => setCurrentColumn(edge?.node?.id ?? "")}
+            b={currentColumnCursor === edge?.cursor ?? ""}
             p
           >
             {edge?.node?.name}
@@ -124,9 +112,7 @@ export const ProjectDetail: React.FC = () => {
           <div>Select Column</div>
         ) : (
           <Column
-            login={project?.organization ?? ""}
-            projectNumber={project?.projectNumber ?? 0}
-            cursor={currentColumnCursor}
+            columnId={currentColumnCursor ?? ""}
           />
         )}
       </Col>

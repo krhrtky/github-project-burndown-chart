@@ -13,24 +13,18 @@ import ReactMarkdown from "react-markdown";
 import {CreateTaskModal} from "@/pages/projects/Task/CreateTaskModal";
 
 type Props = {
-  login: string;
-  projectNumber: number;
-  cursor: string | null;
+  columnId: string;
 };
 
 export const Column: React.FC<Props> = ({
-  login,
-  projectNumber,
-  cursor
+  columnId,
 }) => {
 
   const user = useSelector(selectUser);
   const theme = useTheme();
   const { loading, data } = useProjectColumnQuery({
     variables: {
-      login,
-      projectNumber,
-      cursor,
+      columnId,
       cardFirst: 100,
     },
     context: {
@@ -47,8 +41,13 @@ export const Column: React.FC<Props> = ({
     setModalOpening(true);
   }
 
-  const nodes = data?.viewer.organization?.project?.columns.nodes ?? []
-  const node = nodes[0] ?? null;
+  if (loading) {
+    return <Loading size="large" />;
+  }
+
+  if (data == null || data.node?.__typename !== "ProjectColumn") {
+    throw new Error();
+  }
 
   const badge = (card: Card) => {
     switch (card?.content?.__typename) {
@@ -75,15 +74,13 @@ export const Column: React.FC<Props> = ({
     }
   }
 
-  return loading ? (
-    <Loading size="large" />
-  ) : (
+  return (
     <>
       <Grid.Container gap={1} justify="flex-start" style={{ overflowY: "auto",
         maxHeight: "calc(100vh - (16pt * 10) - 65px)",}}>
-        {node == null ? (
+        {(data?.node?.cards.nodes?.length ?? 0) === 0 ? (
           <div>card not exists</div>
-        ) : node?.cards.nodes?.map(card => (
+        ) : data?.node?.cards?.nodes?.map(card => (
           <Grid xs={12} key={card?.id}>
             <Card
               key={card?.id}
