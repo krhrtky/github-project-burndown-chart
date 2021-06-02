@@ -29,7 +29,7 @@ export const CreateTaskModal: React.FC<Props> = ({ open, onClose, projectCardId 
           .create1(
             projectId,
             {
-              projectCardId: Number(projectCardId),
+              projectCardId,
               estimateStoryPoint: Number(values.estimateStoryPoint)
             });
         toastSuccess();

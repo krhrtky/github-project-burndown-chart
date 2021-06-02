@@ -34,7 +34,7 @@ class TaskController(
     ) = requestBody
             .flatMap { t ->
                 taskCreateUseCase
-                    .handle(TaskCreateInputData(projectId, t.projectCardId ?: 0, t.estimateStoryPoint ?: 0))
+                    .handle(TaskCreateInputData(projectId, t.projectCardId ?: "", t.estimateStoryPoint ?: 0))
             }
             .handle<TaskCreateOutputData> { result, sink ->
                 when(result) {

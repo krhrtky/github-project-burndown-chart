@@ -58,7 +58,7 @@ class TaskPokoBuilder : TaskNotification {
 
 data class TaskData(
     val taskId: String,
-    val projectCardId: Int,
+    val projectCardId: String,
     val estimateStoryPoint: Int,
     val resultStoryPoint: Int?,
     val finishedAt: LocalDateTime?,

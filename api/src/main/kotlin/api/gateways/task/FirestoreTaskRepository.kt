@@ -74,7 +74,7 @@ class FirestoreTaskRepository(
 }
 
 private data class DocumentData(
-    var projectCardId: Int = -1,
+    var projectCardId: String = "",
     var estimateStoryPoint: Int = 0,
     var resultStoryPoint: Int? = null,
     var finishedAt: LocalDateTime? = null,
