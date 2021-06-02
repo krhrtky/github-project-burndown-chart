@@ -11,6 +11,10 @@ type Props = {
 };
 
 export const CreateTaskModal: React.FC<Props> = ({ open, onClose, projectCardId }) => {
+  const close = () => {
+    resetForm();
+    onClose();
+  };
   const { projectId } = useParams<{ projectId: string; }>();
   const [loading, setLoading] = useState(false);
   const [, setToast] = useToasts();
@@ -18,7 +22,11 @@ export const CreateTaskModal: React.FC<Props> = ({ open, onClose, projectCardId 
     text: "Task created !",
     type: "success",
   })
-  const { values, handleSubmit, handleChange } = useFormik<{estimateStoryPoint?: string }>({
+  const toastFail = () => setToast({
+    text: "Fail create task..",
+    type: "error",
+  });
+  const { values, handleSubmit, handleChange, resetForm } = useFormik<{estimateStoryPoint?: string }>({
     initialValues: {
       estimateStoryPoint: undefined,
     },
@@ -33,14 +41,17 @@ export const CreateTaskModal: React.FC<Props> = ({ open, onClose, projectCardId 
               estimateStoryPoint: Number(values.estimateStoryPoint)
             });
         toastSuccess();
+      } catch (_) {
+        toastFail();
       } finally {
         setLoading(false);
-        onClose();
+        close();
       }
     }
   });
+
   return (
-    <Modal open={open} onClose={onClose} disableBackdropClick={loading}>
+    <Modal open={open} onClose={close} disableBackdropClick={loading}>
       <Modal.Title>Register task</Modal.Title>
       <Modal.Content>
         <Input
@@ -51,7 +62,7 @@ export const CreateTaskModal: React.FC<Props> = ({ open, onClose, projectCardId 
           onChange={handleChange}
         />
       </Modal.Content>
-      <Modal.Action passive onClick={onClose} disabled={loading}>Cancel</Modal.Action>
+      <Modal.Action passive onClick={close} disabled={loading}>Cancel</Modal.Action>
       <Modal.Action onClick={() => handleSubmit()} loading={loading}>Register</Modal.Action>
     </Modal>
   );
