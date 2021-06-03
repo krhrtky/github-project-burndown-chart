@@ -70,7 +70,7 @@ class TaskController(
                 is Either.Left ->
                     when(result.value) {
                         is TaskDoesNotExistsException -> sink.error(
-                            ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR)
+                            ResponseStatusException(HttpStatus.NOT_FOUND)
                         )
                         else -> sink.error(ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR))
                     }
