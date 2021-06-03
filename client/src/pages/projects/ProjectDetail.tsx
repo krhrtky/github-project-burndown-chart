@@ -37,7 +37,7 @@ type UnFinishedTask = {
 type FinishedTask = {
   estimateStoryPoint: number;
   finishedAt: Timestamp;
-  projectCardId: number;
+  projectCardId: string;
   resultStoryPoint: number;
 };
 
