@@ -10,6 +10,7 @@ import api.domains.models.task.TaskPokoBuilder
 import api.domains.models.task.TaskRepository
 import com.google.cloud.firestore.FieldPath
 import com.google.cloud.firestore.Firestore
+import com.google.cloud.firestore.QueryDocumentSnapshot
 import java.time.LocalDateTime
 import org.springframework.stereotype.Repository
 
@@ -18,6 +19,16 @@ class FirestoreTaskRepository(
     private val firestore: Firestore
 ): TaskRepository {
     private val collection = firestore.collection("task")
+    private val mapToModel = { queryDocumentSnapshot: QueryDocumentSnapshot ->
+        val data = queryDocumentSnapshot.toObject(DocumentData::class.java)
+        Task(
+            taskId = TaskId(queryDocumentSnapshot.id),
+            projectCardId = ProjectCardId(data.projectCardId),
+            estimateStoryPoint = EstimateStoryPoint(data.estimateStoryPoint),
+            resultStoryPoint = data.resultStoryPoint?.let { ResultStoryPoint(data.resultStoryPoint!!) },
+            finishedAt = data.finishedAt?.let { FinishedAt(it) }
+        )
+    }
 
     override fun store(task: Task) {
         val taskData = TaskPokoBuilder()
@@ -36,7 +47,7 @@ class FirestoreTaskRepository(
             )
     }
 
-    override fun findById(taskId: TaskId): Task? =
+    override fun find(taskId: TaskId): Task? =
         collection
             .document(taskId.value)
             .get()
@@ -55,22 +66,21 @@ class FirestoreTaskRepository(
                 )
             }
 
-    override fun findByIds(taskIds: List<TaskId>): List<Task> =
+    override fun find(projectCardId: ProjectCardId): Task? =
+        collection
+            .whereEqualTo("projectCardId", projectCardId.value)
+            .get()
+            .get()
+            .mapNotNull(mapToModel)
+            .first()
+
+    override fun find(taskIds: List<TaskId>): List<Task> =
         if (taskIds.isEmpty()) emptyList()
         else collection
             .whereIn(FieldPath.documentId(), taskIds.map { it.value })
             .get()
             .get()
-            .mapNotNull { doc ->
-                val data = doc.toObject(DocumentData::class.java)
-                Task(
-                    taskId = TaskId(doc.id),
-                    projectCardId = ProjectCardId(data.projectCardId),
-                    estimateStoryPoint = EstimateStoryPoint(data.estimateStoryPoint),
-                    resultStoryPoint = data.resultStoryPoint?.let { ResultStoryPoint(data.resultStoryPoint!!) },
-                    finishedAt = data.finishedAt?.let { FinishedAt(it) }
-                )
-            }
+            .mapNotNull(mapToModel)
 }
 
 private data class DocumentData(
