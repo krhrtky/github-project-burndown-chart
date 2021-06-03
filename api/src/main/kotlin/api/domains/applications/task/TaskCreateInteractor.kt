@@ -44,7 +44,7 @@ class TaskCreateInteractor(
             estimateStoryPoint = EstimateStoryPoint(inputData.estimateStoryPoint),
         )
 
-        val tasks = taskRepository.findByIds(project.tasks)
+        val tasks = taskRepository.find(project.tasks)
 
         if (ProjectTasksSpecification.isSatisfiedBy(ProjectTasks(tasks.plus(newTask)))) {
             val projectAddedTask = project.addTask(newTaskId)

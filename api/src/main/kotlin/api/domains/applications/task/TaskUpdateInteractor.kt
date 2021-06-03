@@ -21,7 +21,7 @@ class TaskUpdateInteractor(
 ): TaskUpdateUseCase {
     override fun handle(inputData: TaskUpdateInputData): Mono<Either<UpdateTaskException, TaskUpdateOutputData>> {
 
-        val task = taskRepository.findById(TaskId(inputData.taskId))
+        val task = taskRepository.find(TaskId(inputData.taskId))
             ?: return Mono.just(Either.Left(TaskDoesNotExistsException()))
 
         val rawValue = TaskPokoBuilder()

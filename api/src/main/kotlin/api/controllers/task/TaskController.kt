@@ -6,10 +6,15 @@ import api.usecases.task.create.TaskCreateInputData
 import api.usecases.task.create.TaskCreateOutputData
 import api.usecases.task.create.TaskCreateUseCase
 import api.usecases.task.errors.TaskDoesNotExistsException
+import api.usecases.task.finish.TaskAlreadyFinishedException
+import api.usecases.task.finish.TaskFinishInputData
+import api.usecases.task.finish.TaskFinishOutputData
+import api.usecases.task.finish.TaskFinishUseCase
 import api.usecases.task.update.TaskUpdateInputData
 import api.usecases.task.update.TaskUpdateOutputData
 import api.usecases.task.update.TaskUpdateUseCase
 import arrow.core.Either
+import java.time.LocalDateTime
 import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -25,6 +30,7 @@ import reactor.core.publisher.Mono
 class TaskController(
     private val taskCreateUseCase: TaskCreateUseCase,
     private val taskUpdateUseCase: TaskUpdateUseCase,
+    private val taskFinishUseCase: TaskFinishUseCase,
 ) {
 
     @PostMapping("/projects/{projectId}/tasks")
@@ -71,6 +77,36 @@ class TaskController(
                     when(result.value) {
                         is TaskDoesNotExistsException -> sink.error(
                             ResponseStatusException(HttpStatus.NOT_FOUND)
+                        )
+                        else -> sink.error(ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR))
+                    }
+            }
+        }
+
+    @PostMapping("/projects/{projectId}/tasks/{taskId}/finish")
+    fun finish(
+        @PathVariable taskId: String,
+        @Valid @RequestBody requestBody: Mono<FinishTaskRequestBody>,
+    ): Mono<TaskFinishOutputData> = requestBody
+        .flatMap {
+            taskFinishUseCase.handle(
+                TaskFinishInputData(
+                    taskId = taskId,
+                    resultStoryPoint = it.resultStoryPoint ?: 0,
+                    finishedAt = it.finishedAt ?: LocalDateTime.now()
+                )
+            )
+        }
+        .handle { result, sink ->
+            when(result) {
+                is Either.Right -> sink.next(result.value)
+                is Either.Left ->
+                    when(result.value) {
+                        is TaskDoesNotExistsException -> sink.error(
+                            ResponseStatusException(HttpStatus.NOT_FOUND)
+                        )
+                        is TaskAlreadyFinishedException -> sink.error(
+                            ResponseStatusException(HttpStatus.CONFLICT)
                         )
                         else -> sink.error(ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR))
                     }
