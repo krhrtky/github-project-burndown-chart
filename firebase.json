@@ -22,7 +22,7 @@
         "destination": "/index.html"
       }
     ],
-    "postdeploy": "npm run build --prefix client"
+    "predeploy": "npm run build --prefix client"
   },
   "emulators": {
     "auth": {
