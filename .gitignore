@@ -68,3 +68,4 @@ node_modules/
 client/dist
 client/src/generated
 schema.gql
+.gradle
