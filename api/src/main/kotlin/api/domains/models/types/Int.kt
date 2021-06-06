@@ -4,8 +4,8 @@ fun Int.isFibonacci(): Boolean {
     var first = 0
     var second = 1
 
-    if (this == 0) {
-        return true
+    if (this <= first) {
+        return false
     }
     var num = 0
 

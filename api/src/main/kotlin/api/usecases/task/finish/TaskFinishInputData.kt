@@ -1,9 +1,10 @@
 package api.usecases.task.finish
 
+import api.domains.types.StoryPoint
 import java.time.LocalDateTime
 
 data class TaskFinishInputData(
     val taskId: String,
-    val resultStoryPoint: Int,
+    val resultStoryPoint: StoryPoint,
     val finishedAt: LocalDateTime,
 )

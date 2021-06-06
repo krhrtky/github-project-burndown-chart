@@ -6,6 +6,7 @@ import api.domains.models.task.ResultStoryPoint
 import api.domains.models.task.TaskId
 import api.domains.models.task.TaskPokoBuilder
 import api.domains.models.task.TaskRepository
+import api.domains.types.StoryPoint
 import api.usecases.task.errors.TaskDoesNotExistsException
 import api.usecases.task.update.TaskUpdateInputData
 import api.usecases.task.update.TaskUpdateOutputData
@@ -29,10 +30,12 @@ class TaskUpdateInteractor(
             .build()
 
         // TODO: To be simplify or spin out to Factory.
-        val resultStoryPoint = inputData.resultStoryPoint ?: rawValue.resultStoryPoint
+        val resultStoryPoint = inputData.resultStoryPoint ?: rawValue.resultStoryPoint?.let { StoryPoint(it) }
         val finishedAt = inputData.finishedAt ?: rawValue.finishedAt
         val updatedTask = task.copy(
-            estimateStoryPoint = EstimateStoryPoint(inputData.estimateStoryPoint ?: rawValue.estimateStoryPoint),
+            estimateStoryPoint = EstimateStoryPoint(
+                inputData.estimateStoryPoint ?: StoryPoint(rawValue.estimateStoryPoint)
+            ),
             resultStoryPoint = if (resultStoryPoint == null) null else ResultStoryPoint(resultStoryPoint),
             finishedAt = if (finishedAt == null) null else FinishedAt(finishedAt)
         )
@@ -44,8 +47,8 @@ class TaskUpdateInteractor(
                 TaskUpdateOutputData(
                     inputData.taskId,
                     rawValue.projectCardId,
-                    inputData.estimateStoryPoint ?: rawValue.estimateStoryPoint,
-                    resultStoryPoint,
+                    inputData.estimateStoryPoint?.toInt() ?: rawValue.estimateStoryPoint,
+                    resultStoryPoint?.toInt(),
                     finishedAt,
                 )
             )

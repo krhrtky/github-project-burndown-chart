@@ -1,11 +1,8 @@
 package api.domains.models.task
 
-import api.domains.models.types.isFibonacci
+import api.domains.types.StoryPoint
 
-data class EstimateStoryPoint(val value: Int) {
-    init {
-        if(!value.isFibonacci()) {
-            throw IllegalArgumentException("${this.javaClass.simpleName} must be fibonacci. got $value")
-        }
-    }
+data class EstimateStoryPoint(private val storyPoint: StoryPoint) {
+    val value: Int
+        get() = this.storyPoint.toInt()
 }

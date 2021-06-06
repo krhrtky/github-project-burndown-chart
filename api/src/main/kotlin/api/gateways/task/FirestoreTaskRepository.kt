@@ -8,6 +8,7 @@ import api.domains.models.task.Task
 import api.domains.models.task.TaskId
 import api.domains.models.task.TaskPokoBuilder
 import api.domains.models.task.TaskRepository
+import api.domains.types.StoryPoint
 import com.google.cloud.firestore.FieldPath
 import com.google.cloud.firestore.Firestore
 import com.google.cloud.firestore.QueryDocumentSnapshot
@@ -24,8 +25,8 @@ class FirestoreTaskRepository(
         Task(
             taskId = TaskId(queryDocumentSnapshot.id),
             projectCardId = ProjectCardId(data.projectCardId),
-            estimateStoryPoint = EstimateStoryPoint(data.estimateStoryPoint),
-            resultStoryPoint = data.resultStoryPoint?.let { ResultStoryPoint(data.resultStoryPoint!!) },
+            estimateStoryPoint = EstimateStoryPoint(StoryPoint(data.estimateStoryPoint)),
+            resultStoryPoint = data.resultStoryPoint?.let { ResultStoryPoint(StoryPoint(data.resultStoryPoint!!)) },
             finishedAt = data.finishedAt?.let { FinishedAt(it) }
         )
     }
@@ -56,9 +57,9 @@ class FirestoreTaskRepository(
                 Task(
                     taskId = taskId,
                     projectCardId = ProjectCardId(it.projectCardId),
-                    estimateStoryPoint = EstimateStoryPoint(it.estimateStoryPoint),
+                    estimateStoryPoint = EstimateStoryPoint(StoryPoint(it.estimateStoryPoint)),
                     resultStoryPoint = it.resultStoryPoint?.let {
-                            resultStoryPoint -> ResultStoryPoint(resultStoryPoint)
+                            resultStoryPoint -> ResultStoryPoint(StoryPoint(resultStoryPoint))
                     },
                     finishedAt = it.finishedAt?.let {
                             finishedAt -> FinishedAt(finishedAt)

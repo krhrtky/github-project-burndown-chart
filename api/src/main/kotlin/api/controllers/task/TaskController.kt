@@ -1,5 +1,6 @@
 package api.controllers.task
 
+import api.domains.types.StoryPoint
 import api.usecases.task.create.ProjectNotExistsException
 import api.usecases.task.create.TaskAlreadyExistsException
 import api.usecases.task.create.TaskCreateInputData
@@ -40,7 +41,11 @@ class TaskController(
     ) = requestBody
             .flatMap { t ->
                 taskCreateUseCase
-                    .handle(TaskCreateInputData(projectId, t.projectCardId ?: "", t.estimateStoryPoint ?: 0))
+                    .handle(
+                        TaskCreateInputData(
+                            projectId,
+                            t.projectCardId ?: "",
+                            StoryPoint(t.estimateStoryPoint ?: 0)))
             }
             .handle<TaskCreateOutputData> { result, sink ->
                 when(result) {
@@ -64,8 +69,8 @@ class TaskController(
             taskUpdateUseCase.handle(
                 TaskUpdateInputData(
                     taskId = taskId,
-                    estimateStoryPoint = it.estimateStoryPoint,
-                    resultStoryPoint = it.resultStoryPoint,
+                    estimateStoryPoint = it.estimateStoryPoint?.let { StoryPoint(it) },
+                    resultStoryPoint = it.resultStoryPoint?.let { StoryPoint(it) },
                     finishedAt = it.finishedAt,
                 )
             )
@@ -83,7 +88,7 @@ class TaskController(
             }
         }
 
-    @PostMapping("/projects/{projectId}/tasks/{taskId}/finish")
+    @PostMapping("/tasks/{taskId}/finish")
     fun finish(
         @PathVariable taskId: String,
         @Valid @RequestBody requestBody: Mono<FinishTaskRequestBody>,
@@ -92,7 +97,7 @@ class TaskController(
             taskFinishUseCase.handle(
                 TaskFinishInputData(
                     taskId = taskId,
-                    resultStoryPoint = it.resultStoryPoint ?: 0,
+                    resultStoryPoint = StoryPoint(it.resultStoryPoint ?: 0),
                     finishedAt = it.finishedAt ?: LocalDateTime.now()
                 )
             )
