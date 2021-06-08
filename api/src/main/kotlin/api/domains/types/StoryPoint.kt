@@ -5,7 +5,7 @@ import java.lang.IllegalArgumentException
 
 class StoryPoint(private val value: Int) {
     init {
-        if (value.isFibonacci()) {
+        if (!value.isFibonacci()) {
             throw IllegalArgumentException("${this.javaClass.simpleName} must be fibonacci. got $value")
         }
     }

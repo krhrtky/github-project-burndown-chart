@@ -6,5 +6,5 @@ import javax.validation.constraints.NotNull
 
 data class CreateTaskRequestBody(
     @field:NotBlank val projectCardId: String?,
-    @field:NotNull @Fibonacci val estimateStoryPoint: Int?,
+    @field:NotNull @field:Fibonacci val estimateStoryPoint: Int?,
 )
