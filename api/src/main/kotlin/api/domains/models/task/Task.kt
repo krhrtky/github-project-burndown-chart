@@ -39,7 +39,7 @@ data class Task constructor(
         finishedAt = finishedAt,
     )
 
-    fun isFinished(): Boolean = resultStoryPoint == null && finishedAt == null
+    fun isFinished(): Boolean = resultStoryPoint != null && finishedAt != null
 
     fun isSameProjectCard(other: Task): Boolean = this.projectCardId == other.projectCardId
 
