@@ -1,6 +1,6 @@
 import {useSelector} from "react-redux";
 import {selectUser} from "@/store/user/userSlice";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
   Issue,
   Maybe,
@@ -8,16 +8,47 @@ import {
   PullRequest,
   useProjectColumnQuery
 } from "@/generated/graphql/graphql";
+import { getApp } from "@firebase/app";
+import {
+  getDocs,
+  getFirestore,
+  collection,
+  where,
+  query,
+  documentId,
+  Timestamp,
+} from "@firebase/firestore";
 import {Badge, Card, Grid, Loading, useTheme } from "@geist-ui/react";
 import ReactMarkdown from "react-markdown";
 import {CreateTaskModal} from "@/pages/projects/Task/CreateTaskModal";
+import {FinishTaskModal} from "@/pages/projects/Task/FinishTaskModal";
+
+type UnFinishedTask = {
+  id: string;
+  estimateStoryPoint: number;
+  finishedAt: Timestamp;
+  projectCardId: null;
+  resultStoryPoint: null;
+};
+
+type FinishedTask = {
+  id: string;
+  estimateStoryPoint: number;
+  finishedAt: Timestamp;
+  projectCardId: string;
+  resultStoryPoint: number;
+};
+
+type Task = UnFinishedTask | FinishedTask;
 
 type Props = {
   columnId: string;
+  taskIds: Array<string>;
 };
 
 export const Column: React.FC<Props> = ({
   columnId,
+  taskIds,
 }) => {
 
   const user = useSelector(selectUser);
@@ -36,10 +67,29 @@ export const Column: React.FC<Props> = ({
   const [modalOpening, setModalOpening] = useState<boolean>(false);
   const closeModal = () => setModalOpening(false);
   const [selectedCardId, selectCardId] = useState<string>("");
+  const [tasks, setTasks] = useState<Array<Task>>([]);
   const openModal = (cardId: string) => {
     selectCardId(cardId);
     setModalOpening(true);
   }
+
+  useEffect(() => {
+    if (taskIds.length === 0) {
+      return;
+    }
+    getDocs<Task>(
+      query(
+        collection(getFirestore(getApp()), "task"),
+        where(documentId(), "in", taskIds)
+      ),
+    ).then(querySnapshot => {
+      const tasks = querySnapshot.docs.map(documentSnapshot => ({
+        ...(documentSnapshot.data()),
+        id: documentSnapshot.id,
+      }));
+      setTasks(tasks);
+    });
+  }, [taskIds]);
 
   if (loading) {
     return <Loading size="large" />;
@@ -97,7 +147,12 @@ export const Column: React.FC<Props> = ({
         ))
         }
       </Grid.Container>
-      <CreateTaskModal open={modalOpening} onClose={closeModal} projectCardId={selectedCardId} />
+      <FinishTaskModal
+        open={modalOpening && tasks.map(task => task.projectCardId).includes(selectedCardId)}
+        onClose={closeModal}
+        taskId={tasks.find(task => task.projectCardId === selectedCardId)?.id ?? ""}
+      />
+      <CreateTaskModal open={modalOpening && !tasks.map(task => task.projectCardId).includes(selectedCardId)} onClose={closeModal} projectCardId={selectedCardId} />
     </>
   );
 }

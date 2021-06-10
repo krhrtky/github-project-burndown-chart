@@ -6,14 +6,8 @@ import {
 } from "react-router-dom";
 import {
   doc,
-  getDocs,
   getFirestore,
-  collection,
-  where,
   onSnapshot,
-  query,
-  Timestamp,
-  documentId,
 } from "@firebase/firestore";
 import { useProjectCardsQuery } from "@/generated/graphql/graphql";
 import { useSelector } from "react-redux";
@@ -27,27 +21,10 @@ type Project = {
   tasks: Array<string>;
 };
 
-type UnFinishedTask = {
-  estimateStoryPoint: number;
-  finishedAt: Timestamp;
-  projectCardId: null;
-  resultStoryPoint: null;
-};
-
-type FinishedTask = {
-  estimateStoryPoint: number;
-  finishedAt: Timestamp;
-  projectCardId: string;
-  resultStoryPoint: number;
-};
-
-type Task = UnFinishedTask | FinishedTask;
-
 export const ProjectDetail: React.FC = () => {
   const user = useSelector(selectUser);
   const { projectId } = useParams<{ projectId: string; }>();
   const [project, setProject] = useState<Project | null>(null);
-  const [tasks, setTasks] = useState<Array<Task>>([]);
   const { loading, data } = useProjectCardsQuery({
     variables: {
       login: project?.organization ?? "",
@@ -76,21 +53,6 @@ export const ProjectDetail: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    if (project == null || project.tasks.length === 0) {
-      return;
-    }
-    getDocs<Task>(
-      query(
-        collection(getFirestore(getApp()), "task"),
-        where(documentId(), "in", project.tasks)
-      ),
-    ).then(querySnapshot => {
-      const tasks = querySnapshot.docs.map(documentSnapshot => documentSnapshot.data())
-      setTasks(tasks);
-    });
-  }, [project]);
-
   return loading ? (
     <Loading size="large" />
   ) : (
@@ -113,6 +75,7 @@ export const ProjectDetail: React.FC = () => {
         ) : (
           <Column
             columnId={currentColumnCursor ?? ""}
+            taskIds={project?.tasks ?? []}
           />
         )}
       </Col>

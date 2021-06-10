@@ -28,7 +28,7 @@ export const CreateTaskModal: React.FC<Props> = ({ open, onClose, projectCardId 
   });
   const { values, handleSubmit, handleChange, resetForm } = useFormik<{estimateStoryPoint?: string }>({
     initialValues: {
-      estimateStoryPoint: undefined,
+      estimateStoryPoint: "",
     },
     onSubmit: async values => {
       setLoading(true);
