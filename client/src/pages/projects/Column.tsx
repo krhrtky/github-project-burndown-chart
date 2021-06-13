@@ -10,36 +10,19 @@ import {
 } from "@/generated/graphql/graphql";
 import { getApp } from "@firebase/app";
 import {
-  getDocs,
+  onSnapshot,
   getFirestore,
   collection,
   where,
   query,
   documentId,
-  Timestamp,
 } from "@firebase/firestore";
 import {Badge, Card, Grid, Loading, useTheme } from "@geist-ui/react";
 import ReactMarkdown from "react-markdown";
 import {CreateTaskModal} from "@/pages/projects/Task/CreateTaskModal";
 import {FinishTaskModal} from "@/pages/projects/Task/FinishTaskModal";
-
-type UnFinishedTask = {
-  id: string;
-  estimateStoryPoint: number;
-  finishedAt: Timestamp;
-  projectCardId: null;
-  resultStoryPoint: null;
-};
-
-type FinishedTask = {
-  id: string;
-  estimateStoryPoint: number;
-  finishedAt: Timestamp;
-  projectCardId: string;
-  resultStoryPoint: number;
-};
-
-type Task = UnFinishedTask | FinishedTask;
+import {FinishedTask, Task} from "./Task/type";
+import {FinishedTaskModal} from "@/pages/projects/Task/FinishedTaskModal";
 
 type Props = {
   columnId: string;
@@ -77,18 +60,23 @@ export const Column: React.FC<Props> = ({
     if (taskIds.length === 0) {
       return;
     }
-    getDocs<Task>(
+
+    const unsubscribe = onSnapshot<Task>(
       query(
         collection(getFirestore(getApp()), "task"),
         where(documentId(), "in", taskIds)
       ),
-    ).then(querySnapshot => {
-      const tasks = querySnapshot.docs.map(documentSnapshot => ({
-        ...(documentSnapshot.data()),
-        id: documentSnapshot.id,
-      }));
-      setTasks(tasks);
-    });
+      doc => {
+        const tasks = doc.docs.map(documentSnapshot => ({
+          ...(documentSnapshot.data()),
+          id: documentSnapshot.id,
+        }));
+        setTasks(tasks);
+      }
+    );
+
+    return () => unsubscribe();
+
   }, [taskIds]);
 
   if (loading) {
@@ -98,6 +86,8 @@ export const Column: React.FC<Props> = ({
   if (data == null || data.node?.__typename !== "ProjectColumn") {
     throw new Error();
   }
+
+  const storedTask = tasks.find(task => task.projectCardId === selectedCardId);
 
   const badge = (card: Card) => {
     switch (card?.content?.__typename) {
@@ -147,15 +137,26 @@ export const Column: React.FC<Props> = ({
         ))
         }
       </Grid.Container>
+      {
+        storedTask != null && isFinishedTask(storedTask) ? (
+          <FinishedTaskModal
+            open={modalOpening}
+            onClose={closeModal}
+            task={storedTask}
+          />
+        ) : null
+      }
       <FinishTaskModal
-        open={modalOpening && tasks.map(task => task.projectCardId).includes(selectedCardId)}
+        open={modalOpening && storedTask != null && !isFinishedTask(storedTask)}
         onClose={closeModal}
         taskId={tasks.find(task => task.projectCardId === selectedCardId)?.id ?? ""}
       />
-      <CreateTaskModal open={modalOpening && !tasks.map(task => task.projectCardId).includes(selectedCardId)} onClose={closeModal} projectCardId={selectedCardId} />
+      <CreateTaskModal open={modalOpening && storedTask == null} onClose={closeModal} projectCardId={selectedCardId} />
     </>
   );
 }
+
+const isFinishedTask = (task: Task): task is FinishedTask  => task.finishedAt !== null && task.resultStoryPoint !== null;
 
 type Card = Maybe<{ __typename: 'ProjectCard' }
   & Pick<ProjectCard, 'id' | 'resourcePath' | 'databaseId' | 'note' | 'isArchived'>
