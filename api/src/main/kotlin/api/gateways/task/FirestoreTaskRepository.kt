@@ -9,10 +9,14 @@ import api.domains.models.task.TaskId
 import api.domains.models.task.TaskPokoBuilder
 import api.domains.models.task.TaskRepository
 import api.domains.types.StoryPoint
+import com.google.cloud.Timestamp
 import com.google.cloud.firestore.FieldPath
 import com.google.cloud.firestore.Firestore
 import com.google.cloud.firestore.QueryDocumentSnapshot
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.util.Date
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -27,7 +31,7 @@ class FirestoreTaskRepository(
             projectCardId = ProjectCardId(data.projectCardId),
             estimateStoryPoint = EstimateStoryPoint(StoryPoint(data.estimateStoryPoint)),
             resultStoryPoint = data.resultStoryPoint?.let { ResultStoryPoint(StoryPoint(data.resultStoryPoint!!)) },
-            finishedAt = data.finishedAt?.let { FinishedAt(it) }
+            finishedAt = data.finishedAt?.let { FinishedAt(it.toDate().toLocalDateTime()) }
         )
     }
 
@@ -43,7 +47,9 @@ class FirestoreTaskRepository(
                     projectCardId = taskData.projectCardId,
                     estimateStoryPoint = taskData.estimateStoryPoint,
                     resultStoryPoint = taskData.resultStoryPoint,
-                    finishedAt = taskData.finishedAt,
+                    finishedAt = taskData.finishedAt?.let {
+                        Timestamp.of(it.toDate())
+                    },
                 )
             )
     }
@@ -62,7 +68,7 @@ class FirestoreTaskRepository(
                             resultStoryPoint -> ResultStoryPoint(StoryPoint(resultStoryPoint))
                     },
                     finishedAt = it.finishedAt?.let {
-                            finishedAt -> FinishedAt(finishedAt)
+                            finishedAt -> FinishedAt(finishedAt.toDate().toLocalDateTime())
                     }
                 )
             }
@@ -84,9 +90,12 @@ class FirestoreTaskRepository(
             .mapNotNull(mapToModel)
 }
 
+private fun Date.toLocalDateTime() = this.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+private fun LocalDateTime.toDate() = Date.from(ZonedDateTime.of(this, ZoneId.systemDefault()).toInstant())
+
 private data class DocumentData(
     var projectCardId: String = "",
     var estimateStoryPoint: Int = 0,
     var resultStoryPoint: Int? = null,
-    var finishedAt: LocalDateTime? = null,
+    var finishedAt: Timestamp? = null,
 )
