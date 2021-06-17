@@ -6,6 +6,7 @@ interface TaskNotification {
     fun setTaskId(taskId: TaskId)
     fun setProjectCardId(projectCardId: ProjectCardId)
     fun setEstimateStoryPoint(estimateStoryPoint: EstimateStoryPoint)
+    fun setAddedAt(addedAt: AddedAt)
     fun setResultStoryPoint(resultStoryPoint: ResultStoryPoint?)
     fun setFinishedAt(finishedAt: FinishedAt?)
 }

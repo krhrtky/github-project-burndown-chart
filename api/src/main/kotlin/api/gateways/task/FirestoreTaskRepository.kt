@@ -1,5 +1,6 @@
 package api.gateways.task
 
+import api.domains.models.task.AddedAt
 import api.domains.models.task.EstimateStoryPoint
 import api.domains.models.task.FinishedAt
 import api.domains.models.task.ProjectCardId
@@ -30,6 +31,7 @@ class FirestoreTaskRepository(
             taskId = TaskId(queryDocumentSnapshot.id),
             projectCardId = ProjectCardId(data.projectCardId),
             estimateStoryPoint = EstimateStoryPoint(StoryPoint(data.estimateStoryPoint)),
+            addedAt = AddedAt(data.addedAt.toDate().toLocalDateTime()),
             resultStoryPoint = data.resultStoryPoint?.let { ResultStoryPoint(StoryPoint(data.resultStoryPoint!!)) },
             finishedAt = data.finishedAt?.let { FinishedAt(it.toDate().toLocalDateTime()) }
         )
@@ -64,6 +66,7 @@ class FirestoreTaskRepository(
                     taskId = taskId,
                     projectCardId = ProjectCardId(it.projectCardId),
                     estimateStoryPoint = EstimateStoryPoint(StoryPoint(it.estimateStoryPoint)),
+                    addedAt = AddedAt(it.addedAt.toDate().toLocalDateTime()),
                     resultStoryPoint = it.resultStoryPoint?.let {
                             resultStoryPoint -> ResultStoryPoint(StoryPoint(resultStoryPoint))
                     },
@@ -96,6 +99,7 @@ private fun LocalDateTime.toDate() = Date.from(ZonedDateTime.of(this, ZoneId.sys
 private data class DocumentData(
     var projectCardId: String = "",
     var estimateStoryPoint: Int = 0,
+    val addedAt: Timestamp = Timestamp.now(),
     var resultStoryPoint: Int? = null,
     var finishedAt: Timestamp? = null,
 )

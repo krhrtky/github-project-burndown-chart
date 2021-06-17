@@ -1,9 +1,12 @@
 package api.domains.models.task
 
+import java.time.LocalDate
+
 data class Task constructor(
     private val taskId: TaskId,
     private val projectCardId: ProjectCardId,
     private val estimateStoryPoint: EstimateStoryPoint,
+    private val addedAt: AddedAt,
     private val resultStoryPoint: ResultStoryPoint? = null,
     private val finishedAt: FinishedAt? = null,
 ) {
@@ -21,10 +24,12 @@ data class Task constructor(
             taskId: TaskId,
             projectCardId: ProjectCardId,
             estimateStoryPoint: EstimateStoryPoint,
+            addedAt: AddedAt,
         ): Task = Task(
             taskId = taskId,
             projectCardId = projectCardId,
             estimateStoryPoint = estimateStoryPoint,
+            addedAt = addedAt,
         )
     }
 
@@ -35,11 +40,19 @@ data class Task constructor(
         taskId = this.taskId,
         projectCardId = this.projectCardId,
         estimateStoryPoint = this.estimateStoryPoint,
+        addedAt = this.addedAt,
         resultStoryPoint = resultStoryPoint,
         finishedAt = finishedAt,
     )
 
+    fun isAddedAt(date: LocalDate) = addedAt.value.toLocalDate().isEqual(date) ||
+            addedAt.value.toLocalDate().isBefore(date)
+
     fun isFinished(): Boolean = resultStoryPoint != null && finishedAt != null
+    fun isFinishedAt(date: LocalDate): Boolean {
+        val finishedAt = finishedAt?.value?.toLocalDate() ?: return false
+        return finishedAt.isEqual(date) || finishedAt.isBefore(date)
+    }
 
     fun isSameProjectCard(other: Task): Boolean = this.projectCardId == other.projectCardId
 
@@ -47,6 +60,7 @@ data class Task constructor(
         notification.setTaskId(this.taskId)
         notification.setProjectCardId(this.projectCardId)
         notification.setEstimateStoryPoint(this.estimateStoryPoint)
+        notification.setAddedAt(this.addedAt)
         notification.setResultStoryPoint(this.resultStoryPoint)
         notification.setFinishedAt(this.finishedAt)
     }
