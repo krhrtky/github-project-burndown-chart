@@ -30,11 +30,11 @@ const App = () => {
               <CssBaseline />
               <Page size="medium">
                 <Page.Header>
-                  <h2>Header</h2>
+                  <h2>GitHub Project Burndown</h2>
                 </Page.Header>
                 <Divider y={0}/>
                 <ConnectedRouter history={history}>
-                  <Page.Content>
+                  <Page.Content style={{ padding: "16pt 0"}}>
                     <Switch>
                       <Route exact path="/">
                         <Top />
@@ -42,15 +42,10 @@ const App = () => {
                       <Route path="/project">
                         <ProjectRoot />
                       </Route>
-                      <Route path="/projects">
-                        <ProjectsRoot />
-                      </Route>
+                      <ProjectsRoot />
                     </Switch>
                     </Page.Content>
                   </ConnectedRouter>
-                  <Page.Footer style={{ backgroundColor: "white", bottom: 0, zIndex: 1, position: "fixed" }}>
-                    <h2>Footer</h2>
-                  </Page.Footer>
               </Page>
             </GeistProvider>
           </AuthProvider>
