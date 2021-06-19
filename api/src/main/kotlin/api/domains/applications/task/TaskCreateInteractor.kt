@@ -1,14 +1,15 @@
 package api.domains.applications.task
 
 import api.domains.models.project.ProjectId
+import api.domains.models.project.ProjectRepository
 import api.domains.models.project.ProjectTasks
+import api.domains.models.task.AddedAt
 import api.domains.models.task.EstimateStoryPoint
 import api.domains.models.task.ProjectCardId
 import api.domains.models.task.Task
 import api.domains.models.task.TaskId
 import api.domains.models.task.TaskRepository
 import api.domains.specifications.project.ProjectTasksSpecification
-import api.gateways.project.FirestoreProjectRepository
 import api.usecases.task.create.CreateTaskException
 import api.usecases.task.create.ProjectNotExistsException
 import api.usecases.task.create.TaskAlreadyExistsException
@@ -16,6 +17,7 @@ import api.usecases.task.create.TaskCreateInputData
 import api.usecases.task.create.TaskCreateOutputData
 import api.usecases.task.create.TaskCreateUseCase
 import arrow.core.Either
+import java.time.LocalDateTime
 import java.util.UUID
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -24,7 +26,7 @@ import reactor.core.publisher.Mono
 @Transactional
 @Service
 class TaskCreateInteractor(
-    private val projectRepository: FirestoreProjectRepository,
+    private val projectRepository: ProjectRepository,
     private val taskRepository: TaskRepository,
 ): TaskCreateUseCase {
 
@@ -42,6 +44,7 @@ class TaskCreateInteractor(
             taskId = newTaskId,
             projectCardId = ProjectCardId(inputData.projectCardId),
             estimateStoryPoint = EstimateStoryPoint(inputData.estimateStoryPoint),
+            addedAt = AddedAt(LocalDateTime.now())
         )
 
         val tasks = taskRepository.find(project.tasks)

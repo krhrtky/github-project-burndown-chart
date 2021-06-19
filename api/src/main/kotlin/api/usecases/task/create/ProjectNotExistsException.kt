@@ -1,3 +1,5 @@
 package api.usecases.task.create
 
-class ProjectNotExistsException: Exception(), CreateTaskException
+import api.usecases.burndown.get.BurndownGetException
+
+class ProjectNotExistsException: Exception(), CreateTaskException, BurndownGetException
