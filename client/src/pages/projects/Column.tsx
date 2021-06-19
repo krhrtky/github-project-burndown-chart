@@ -117,7 +117,7 @@ export const Column: React.FC<Props> = ({
   return (
     <>
       <Grid.Container gap={1} justify="flex-start" style={{ overflowY: "auto",
-        maxHeight: "calc(100vh - (16pt * 10) - 65px)",}}>
+        maxHeight: "calc(100vh - (16pt * 11) - 65px)",}}>
         {(data?.node?.cards.nodes?.length ?? 0) === 0 ? (
           <div>card not exists</div>
         ) : data?.node?.cards?.nodes?.map(card => (

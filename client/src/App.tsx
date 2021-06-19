@@ -34,7 +34,7 @@ const App = () => {
                 </Page.Header>
                 <Divider y={0}/>
                 <ConnectedRouter history={history}>
-                  <Page.Content style={{ padding: "16pt 0"}}>
+                  <Page.Content style={{ padding: "16pt 0", "overflowY": "hidden" }}>
                     <Switch>
                       <Route exact path="/">
                         <Top />
