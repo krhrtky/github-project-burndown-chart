@@ -61,8 +61,10 @@ export const ProjectDetail: React.FC = () => {
         {data?.viewer.organization?.project?.columns.edges?.map(edge => (
           <Text
             key={edge?.node?.id ?? ""}
+            style={{ cursor: "pointer"}}
             onClick={() => setCurrentColumn(edge?.node?.id ?? "")}
-            b={currentColumnCursor === edge?.cursor ?? ""}
+            type={currentColumnCursor === edge?.node?.id ? "success": undefined}
+            b={currentColumnCursor === edge?.node?.id ?? ""}
             p
           >
             {edge?.node?.name}
