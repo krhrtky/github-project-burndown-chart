@@ -8,7 +8,7 @@
     "dev": "webpack serve --mode development --port 3000",
     "gql:code:gen": "graphql-codegen --config codegen.yml",
     "gql:code:gen:watch": "graphql-codegen --config codegen.yml -w",
-    "openapi:gen": "openapi -i $OPENAPI_SCHEMA_PATH -o ./src/generated/openapi --useUnionTypes"
+    "openapi:gen": "openapi-generator-cli generate -i $OPENAPI_SCHEMA_PATH -g typescript-fetch -o src/generated/openapi --additional-properties=typescriptThreePlus=true"
   },
   "author": "",
   "license": "ISC",
@@ -36,6 +36,7 @@
     "@graphql-codegen/typescript": "1.22.0",
     "@graphql-codegen/typescript-operations": "1.17.16",
     "@graphql-codegen/typescript-react-apollo": "2.2.4",
+    "@openapitools/openapi-generator-cli": "^2.3.5",
     "@types/node": "^15.6.0",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
@@ -46,7 +47,6 @@
     "babel-preset-react-app": "^10.0.0",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
     "html-webpack-plugin": "^5.3.1",
-    "openapi-typescript-codegen": "^0.9.3",
     "ts-loader": "^9.2.1",
     "typescript": "^4.2.4",
     "webpack": "^5.37.1",

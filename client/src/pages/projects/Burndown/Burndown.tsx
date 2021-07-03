@@ -6,7 +6,7 @@ import {
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/user/userSlice";
 import { Loading } from "@geist-ui/react";
-import { ProjectControllerService } from "@/generated/openapi";
+import { Configuration, ProjectControllerApi } from "@/generated/openapi";
 import { Bar } from "react-chartjs-2";
 
 type Project = {
@@ -18,7 +18,13 @@ type Project = {
 export const Burndown: React.VFC = () => {
   const user = useSelector(selectUser);
   const { projectId } = useParams<{ projectId: string; }>();
-  const [charts, setCharts] = useState({
+  const [charts, setCharts] = useState<{
+    result: Array<number>;
+    ideal: Array<number>;
+    dateRange: Array<Date>;
+    estimate: Array<number>;
+    finished: Array<number>;
+  }>({
     dateRange: [],
     ideal: [],
     finished: [],
@@ -29,9 +35,16 @@ export const Burndown: React.VFC = () => {
 
   useEffect(() => {
     setLoading(true);
-    ProjectControllerService
-      .burndown(projectId)
-      .then(res => setCharts(res))
+    const api = new ProjectControllerApi(new Configuration({
+      headers: {
+        Authorization: `Bearer ${user.authenticated ? user.token : ""}`
+      }
+    }));
+
+    api.burndown({ projectId })
+      .then(res => setCharts(res)
+      )
+      .catch(e => console.log(e))
       .finally(() => setLoading(false));
 
   }, []);

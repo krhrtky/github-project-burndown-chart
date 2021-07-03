@@ -2,7 +2,9 @@ import React, {useState} from "react";
 import {Input, Modal, useToasts} from "@geist-ui/react";
 import {useParams} from "react-router-dom";
 import {useFormik} from "formik";
-import {TaskControllerService} from "@/generated/openapi";
+import { Configuration, TaskControllerApi } from "@/generated/openapi";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/user/userSlice";
 
 type Props = {
   open: boolean;
@@ -11,6 +13,7 @@ type Props = {
 };
 
 export const CreateTaskModal: React.FC<Props> = ({ open, onClose, projectCardId }) => {
+  const user = useSelector(selectUser);
   const close = () => {
     resetForm();
     onClose();
@@ -32,14 +35,20 @@ export const CreateTaskModal: React.FC<Props> = ({ open, onClose, projectCardId 
     },
     onSubmit: async values => {
       setLoading(true);
+      const api = new TaskControllerApi(new Configuration({
+        headers: {
+          Authorization: `Bearer ${user.authenticated ? user.token : ""}`
+        }
+      }));
       try {
-        await TaskControllerService
-          .create1(
+        await api
+          .create1({
             projectId,
-            {
+            createTaskRequestBody: {
               projectCardId,
               estimateStoryPoint: Number(values.estimateStoryPoint)
-            });
+            },
+          });
         toastSuccess();
       } catch (_) {
         toastFail();

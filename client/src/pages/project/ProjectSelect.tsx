@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { useProjectQuery } from "@/generated/graphql/graphql";
 import {Authenticated} from "@/store/user/userSlice";
 import {Spinner} from "@geist-ui/react";
@@ -6,7 +6,7 @@ import { getApp } from "@firebase/app";
 import { getFirestore, collection, where, onSnapshot, query } from "@firebase/firestore";
 import { useDispatch } from "react-redux";
 import  { push } from "connected-react-router";
-import {ProjectControllerService} from "@/generated/openapi";
+import { Configuration, ProjectControllerApi } from "@/generated/openapi";
 
 type Props = {
   login: string;
@@ -30,16 +30,24 @@ export const ProjectSelect: React.FC<Props> = ({ login, user }) => {
     }
   });
   const dispatch = useDispatch();
-  const goToProjectDetail = async (projectNumber: number) => {
+  const goToProjectDetail = useCallback(async (projectNumber: number) => {
     const maybeProject = projects.find(project => project.projectNumber === projectNumber)
+    const api = new ProjectControllerApi(new Configuration({
+      headers: {
+        Authorization: `Bearer ${user.authenticated ? user.token : ""}`
+      }
+    }));
     const projectId = maybeProject == null
-      ? await ProjectControllerService
-        .create({organization: login, projectNumber})
-        .then(resp => resp.projectId as string)
+      ? await api
+        .create({ createProjectRequestBody: {
+            organization: login,
+            projectNumber
+          }})
+        .then(resp => resp.projectId)
       :  maybeProject.id
 
     dispatch(push(`/projects/${projectId}`));
-  }
+  }, [user.token]);
 
   useEffect(() => {
     const unsubscribe = onSnapshot<{projectNumber: number}>(

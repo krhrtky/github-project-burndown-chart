@@ -1,8 +1,9 @@
 import React, {useMemo, useState} from "react";
 import {Input, Modal, Text, useToasts} from "@geist-ui/react";
-import {useParams} from "react-router-dom";
 import {useFormik} from "formik";
-import {TaskControllerService} from "@/generated/openapi";
+import { Configuration, TaskControllerApi } from "@/generated/openapi";
+import {useSelector} from "react-redux";
+import {selectUser} from "@/store/user/userSlice";
 
 type Props = {
   open: boolean;
@@ -11,6 +12,7 @@ type Props = {
 };
 
 export const FinishTaskModal: React.FC<Props> = ({ open, onClose, taskId }) => {
+  const user = useSelector(selectUser);
   const close = () => {
     resetForm();
     onClose();
@@ -31,12 +33,20 @@ export const FinishTaskModal: React.FC<Props> = ({ open, onClose, taskId }) => {
       finishedAt: new Date(),
     },
     onSubmit: async values => {
+      const api = new TaskControllerApi(new Configuration({
+        headers: {
+          Authorization: `Bearer ${user.authenticated ? user.token : ""}`
+        }
+      }));
       try {
         setLoading(true);
-        await TaskControllerService.finish(taskId, {
-          resultStoryPoint: Number(values.resultStoryPoint),
-          finishedAt: values.finishedAt.toISOString(),
-        })
+        await api.finish({
+          taskId,
+          finishTaskRequestBody: {
+            resultStoryPoint: Number(values.resultStoryPoint),
+            finishedAt: values.finishedAt,
+          }
+        });
         toastSuccess()
       } catch (e) {
         toastFail();
