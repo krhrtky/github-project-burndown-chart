@@ -8,7 +8,7 @@
     "dev": "webpack serve --mode development --port 3000",
     "gql:code:gen": "graphql-codegen --config codegen.yml",
     "gql:code:gen:watch": "graphql-codegen --config codegen.yml -w",
-    "openapi:gen": "openapi-generator-cli generate -i $OPENAPI_SCHEMA_PATH -g typescript-fetch -o src/generated/openapi --additional-properties=typescriptThreePlus=true"
+    "openapi:gen": "openapi-generator-cli generate -i $OPENAPI_SCHEMA_PATH -g typescript-fetch -o src/generated/openapi --additional-properties=typescriptThreePlus=true && ls -d src/generated/openapi/models/* | xargs -L1 gsed -i '1s|^|// @ts-nocheck\\n|'"
   },
   "author": "",
   "license": "ISC",
