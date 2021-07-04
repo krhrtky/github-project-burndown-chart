@@ -47,7 +47,7 @@ export const ProjectSelect: React.FC<Props> = ({ login, user }) => {
       :  maybeProject.id
 
     dispatch(push(`/projects/${projectId}`));
-  }, [user.token]);
+  }, [user.token, projects]);
 
   useEffect(() => {
     const unsubscribe = onSnapshot<{projectNumber: number}>(

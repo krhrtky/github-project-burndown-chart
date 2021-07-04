@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { selectUser } from "@/store/user/userSlice";
 import { useSelector } from "react-redux";
-import { Redirect } from "react-router-dom";
 import {useOrganizationsLazyQuery} from "@/generated/graphql/graphql";
 import {Col, Loading, Row} from "@geist-ui/react";
 import {ProjectSelect} from "@/pages/project/ProjectSelect";
@@ -18,7 +17,7 @@ export const ProjectList = () => {
   });
 
   if (!user.authenticated) {
-    return <Redirect to="/" />;
+    return null;
   }
 
   useEffect(() => {

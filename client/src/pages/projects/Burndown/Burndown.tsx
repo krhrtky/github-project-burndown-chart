@@ -1,8 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {
-  Redirect,
-  useParams
-} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/user/userSlice";
 import { Loading } from "@geist-ui/react";
@@ -50,7 +47,7 @@ export const Burndown: React.VFC = () => {
   }, []);
 
   if (!user.authenticated) {
-    return <Redirect to="/" />;
+    return null;
   }
 
   return loading ? (

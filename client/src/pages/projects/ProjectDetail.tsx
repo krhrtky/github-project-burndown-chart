@@ -1,9 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { getApp } from "@firebase/app";
-import {
-  Redirect,
-  useParams
-} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   doc,
   getFirestore,
@@ -40,7 +37,7 @@ export const ProjectDetail: React.FC = () => {
   const [currentColumnCursor, setCurrentColumn] = useState<string | null>("");
 
   if (!user.authenticated) {
-    return <Redirect to="/" />;
+    return null;
   }
 
   useEffect(() => {
