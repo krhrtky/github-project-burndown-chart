@@ -33,10 +33,14 @@ export const userSlice = createSlice({
     }),
     signOut: () => ({
       authenticated: false as const,
-    })
+    }),
+    refreshToken: (state, action: PayloadAction<Pick<Authenticated, "token" | "expirationTime">>) => ({
+      ...state,
+      ...action.payload,
+    }),
   },
 });
 
 export const userReducer = userSlice.reducer;
-export const { signIn, signOut } = userSlice.actions;
+export const { signIn, signOut, refreshToken } = userSlice.actions;
 export const selectUser = (state: RootState) => state.user;

@@ -1,7 +1,16 @@
 import React, { useState, useEffect, useContext, createContext } from 'react';
 import { signInWithPopup, GithubAuthProvider, getAuth, User } from "@firebase/auth";
-import { signIn as signInAction, signOut as signOutAction, selectUser } from "@/store/user/userSlice";
-import {useDispatch, useSelector} from "react-redux";
+import {
+  signIn as signInAction,
+  signOut as signOutAction,
+  selectUser,
+  refreshToken
+} from "@/store/user/userSlice";
+import {
+  useDispatch,
+  useSelector
+} from "react-redux";
+import { push } from "connected-react-router";
 
 // @ts-ignore
 const authContext = createContext<ReturnType<typeof useFirebaseAuth>>(null);
@@ -51,9 +60,45 @@ const useFirebaseAuth = () => {
       .onAuthStateChanged(async maybeUser => {
         if (maybeUser == null) {
           dispatch(signOutAction());
+          dispatch(push("/"));
         }
       });
     return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!user.authenticated) {
+      dispatch(push("/"));
+      return;
+    }
+    const current = new Date();
+    const expirationTime = new Date(user.expirationTime);
+    if (current.getTime() > expirationTime.getTime()) {
+      signOut();
+    }
+
+  }, [user]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      const currentUser = auth.currentUser;
+      if (currentUser == null || !user.authenticated) {
+        return;
+      }
+      const current = new Date();
+      const expirationTime = new Date(user.expirationTime);
+      if (current.getTime() > expirationTime.getTime()) {
+        return;
+      }
+
+      currentUser
+        .getIdTokenResult(true)
+        .then(refreshedToken => dispatch(refreshToken(refreshedToken)));
+
+    }, 100000)
+
+    return () => clearInterval(id);
+
   }, []);
 
   return {
