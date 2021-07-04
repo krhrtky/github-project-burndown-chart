@@ -6,12 +6,6 @@ import { Loading } from "@geist-ui/react";
 import { Configuration, ProjectControllerApi } from "@/generated/openapi";
 import { Bar } from "react-chartjs-2";
 
-type Project = {
-  organization: string;
-  projectNumber: number;
-  tasks: Array<string>;
-};
-
 export const Burndown: React.VFC = () => {
   const user = useSelector(selectUser);
   const { projectId } = useParams<{ projectId: string; }>();
