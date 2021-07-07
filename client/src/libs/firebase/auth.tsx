@@ -67,6 +67,20 @@ const useFirebaseAuth = () => {
   }, []);
 
   useEffect(() => {
+
+    window.addEventListener("focus", () => {
+      const currentUser = auth.currentUser;
+      if (currentUser == null || !user.authenticated) {
+        return;
+      }
+      const current = new Date();
+      const expirationTime = new Date(user.expirationTime);
+      if (current.getTime() > expirationTime.getTime()) {
+        return;
+      }
+      signOut();
+    });
+
     if (!user.authenticated) {
       dispatch(push("/"));
       return;
@@ -94,8 +108,7 @@ const useFirebaseAuth = () => {
       currentUser
         .getIdTokenResult(true)
         .then(refreshedToken => dispatch(refreshToken(refreshedToken)));
-
-    }, 100000)
+    }, 100000);
 
     return () => clearInterval(id);
 
