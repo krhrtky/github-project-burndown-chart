@@ -1,6 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../store';
-import {Omit} from "react-redux";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Omit } from "react-redux";
 
 export type User = Authenticated | UnAuthenticated;
 
@@ -43,4 +42,3 @@ export const userSlice = createSlice({
 
 export const userReducer = userSlice.reducer;
 export const { signIn, signOut, refreshToken } = userSlice.actions;
-export const selectUser = (state: RootState) => state.user;

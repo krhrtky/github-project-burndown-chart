@@ -1,10 +1,10 @@
-import React, {useState} from "react";
-import {Input, Modal, useToasts} from "@geist-ui/react";
-import {useParams} from "react-router-dom";
-import {useFormik} from "formik";
+import React, { useState } from "react";
+import { Input, Modal, useToasts } from "@geist-ui/react";
+import { useParams } from "react-router-dom";
+import { useFormik } from "formik";
 import { Configuration, TaskControllerApi } from "@/generated/openapi";
 import { useSelector } from "react-redux";
-import { selectUser } from "@/store/user/userSlice";
+import { selectUser } from "@/store/store";
 
 type Props = {
   open: boolean;
@@ -14,50 +14,54 @@ type Props = {
 
 export const CreateTaskModal: React.FC<Props> = ({ open, onClose, projectCardId }) => {
   const user = useSelector(selectUser);
-  const close = () => {
-    resetForm();
-    onClose();
-  };
-  const { projectId } = useParams<{ projectId: string; }>();
+  const { projectId } = useParams<{ projectId: string }>();
   const [loading, setLoading] = useState(false);
   const [, setToast] = useToasts();
-  const toastSuccess = () => setToast({
-    text: "Task created !",
-    type: "success",
-  })
-  const toastFail = () => setToast({
-    text: "Fail create task..",
-    type: "error",
-  });
-  const { values, handleSubmit, handleChange, resetForm } = useFormik<{estimateStoryPoint?: string }>({
+  const toastSuccess = () =>
+    setToast({
+      text: "Task created !",
+      type: "success",
+    });
+  const toastFail = () =>
+    setToast({
+      text: "Fail create task..",
+      type: "error",
+    });
+  const { values, handleSubmit, handleChange, resetForm } = useFormik<{ estimateStoryPoint?: string }>({
     initialValues: {
       estimateStoryPoint: "",
     },
-    onSubmit: async values => {
+    onSubmit: async (inputValues) => {
       setLoading(true);
-      const api = new TaskControllerApi(new Configuration({
-        headers: {
-          Authorization: `Bearer ${user.authenticated ? user.token : ""}`
-        }
-      }));
+      const api = new TaskControllerApi(
+        new Configuration({
+          headers: {
+            Authorization: `Bearer ${user.authenticated ? user.token : ""}`,
+          },
+        })
+      );
       try {
-        await api
-          .create1({
-            projectId,
-            createTaskRequestBody: {
-              projectCardId,
-              estimateStoryPoint: Number(values.estimateStoryPoint)
-            },
-          });
+        await api.create1({
+          projectId,
+          createTaskRequestBody: {
+            projectCardId,
+            estimateStoryPoint: Number(inputValues.estimateStoryPoint),
+          },
+        });
         toastSuccess();
       } catch (_) {
         toastFail();
       } finally {
         setLoading(false);
-        close();
+        resetForm();
+        onClose();
       }
-    }
+    },
   });
+  const close = () => {
+    resetForm();
+    onClose();
+  };
 
   return (
     <Modal open={open} onClose={close} disableBackdropClick={loading}>
@@ -71,8 +75,12 @@ export const CreateTaskModal: React.FC<Props> = ({ open, onClose, projectCardId 
           onChange={handleChange}
         />
       </Modal.Content>
-      <Modal.Action passive onClick={close} disabled={loading}>Cancel</Modal.Action>
-      <Modal.Action onClick={() => handleSubmit()} loading={loading}>Register</Modal.Action>
+      <Modal.Action passive onClick={close} disabled={loading}>
+        Cancel
+      </Modal.Action>
+      <Modal.Action onClick={() => handleSubmit()} loading={loading}>
+        Register
+      </Modal.Action>
     </Modal>
   );
-}
+};

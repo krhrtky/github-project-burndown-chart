@@ -1,12 +1,12 @@
 import React from "react";
-import {useAuth} from "@/libs/firebase/auth";
-import {Link} from "react-router-dom";
+import { useAuth } from "@/libs/firebase/auth";
+import { Link } from "react-router-dom";
 
-export const Top = () => {
+export const Top: React.VFC = () => {
   const { user, signIn, signOut, loading } = useAuth();
 
   if (loading) {
-    return <div>loading...</div>
+    return <div>loading...</div>;
   }
 
   return (
@@ -14,13 +14,15 @@ export const Top = () => {
       <h2>Hello, Everyone.</h2>
       <p>This is a simulated page, you can click anywhere to close it.</p>
       <Link to="/project/select">projects</Link>
-      {
-        user.authenticated ? (
-          <button onClick={signOut}>signOut</button>
-        ) : (
-          <button onClick={signIn}>signIn</button>
-        )
-      }
+      {user.authenticated ? (
+        <button type="button" onClick={signOut}>
+          signOut
+        </button>
+      ) : (
+        <button type="button" onClick={signIn}>
+          signIn
+        </button>
+      )}
     </>
   );
-}
+};

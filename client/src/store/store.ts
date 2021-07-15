@@ -1,18 +1,9 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { connectRouter, routerMiddleware } from "connected-react-router";
+import { createBrowserHistory } from "history";
+import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
+import storage from "redux-persist/es/storage";
 import { userReducer } from "./user/userSlice";
-import { connectRouter, routerMiddleware } from "connected-react-router"
-import  { createBrowserHistory } from "history";
-import {
-  persistReducer,
-  persistStore,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from "redux-persist";
-import storage from "redux-persist/es/storage"
 
 export const history = createBrowserHistory();
 
@@ -24,11 +15,13 @@ const persistConfig = {
   storage,
 };
 
-
-const persistedReducer = persistReducer(persistConfig, combineReducers({
-  user: userReducer,
-  router: connectRouter(history) as any,
-}));
+const persistedReducer = persistReducer(
+  persistConfig,
+  combineReducers({
+    user: userReducer,
+    router: connectRouter(history),
+  })
+);
 
 export const store = configureStore({
   reducer: persistedReducer,
@@ -36,17 +29,11 @@ export const store = configureStore({
   middleware(getDefaultMiddleware) {
     return getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [
-          FLUSH,
-          REHYDRATE,
-          PAUSE,
-          PERSIST,
-          PURGE,
-          REGISTER,
-        ]
-      }
-    }).concat(routerMiddleware(history))
-  }
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(routerMiddleware(history));
+  },
 });
 
 export const persistor = persistStore(store);
+export const selectUser = (rootState: RootState) => rootState.user;

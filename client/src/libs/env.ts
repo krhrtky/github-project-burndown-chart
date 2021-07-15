@@ -8,6 +8,4 @@ const firebaseConfig = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 } as const;
 
-export {
-  firebaseConfig,
-}
+export { firebaseConfig };
