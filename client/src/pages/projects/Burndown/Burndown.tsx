@@ -37,7 +37,7 @@ export const Burndown: React.VFC = () => {
     api
       .burndown({ projectId })
       .then((res) => setCharts(res))
-      .catch((e) => console.log(e))
+      .catch((e: Error) => e.message)
       .finally(() => setLoading(false));
   }, []);
 

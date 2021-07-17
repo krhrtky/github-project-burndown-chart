@@ -3,7 +3,7 @@ import { connectRouter, routerMiddleware } from "connected-react-router";
 import { createBrowserHistory } from "history";
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 import storage from "redux-persist/es/storage";
-import { userReducer } from "./user/userSlice";
+import { User, userReducer } from "./user/userSlice";
 
 export const history = createBrowserHistory();
 
@@ -36,4 +36,4 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
-export const selectUser = (rootState: RootState) => rootState.user;
+export const selectUser = (rootState: RootState): User => rootState.user;
