@@ -32,16 +32,16 @@ export const ProjectDetail: React.FC = () => {
   });
   const [currentColumnCursor, setCurrentColumn] = useState<string | null>("");
 
-  if (!user.authenticated) {
-    return null;
-  }
-
   useEffect(() => {
     const unsubscribe = onSnapshot<Project>(doc(getFirestore(getApp()), "project", projectId), (snapShot) => {
       setProject(snapShot.data() || null);
     });
     return () => unsubscribe();
-  }, []);
+  }, [projectId]);
+
+  if (!user.authenticated) {
+    return null;
+  }
 
   return loading ? (
     <Loading size="large" />

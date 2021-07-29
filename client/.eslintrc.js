@@ -11,6 +11,7 @@ module.exports = {
     "airbnb",
     "plugin:prettier/recommended",
     "plugin:eslint-comments/recommended",
+    "plugin:react-hooks/recommended",
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {

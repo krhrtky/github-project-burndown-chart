@@ -19,7 +19,7 @@ const Container: React.VFC = () => {
 
   useEffect(() => {
     setState(isBurndownPage ? "burndown" : "detail");
-  }, [isBurndownPage]);
+  }, [isBurndownPage, setState]);
 
   return (
     <>

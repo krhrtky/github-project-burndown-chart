@@ -56,7 +56,7 @@ export const ProjectSelect: React.FC<Props> = ({ login, user }) => {
 
       dispatch(push(`/projects/${projectId}`));
     },
-    [user.token, projects]
+    [projects, user.authenticated, user.token, login, dispatch]
   );
 
   useEffect(() => {
@@ -75,7 +75,7 @@ export const ProjectSelect: React.FC<Props> = ({ login, user }) => {
     );
 
     return () => unsubscribe();
-  }, []);
+  }, [login]);
 
   return loading ? (
     <Spinner size="large" />

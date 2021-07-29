@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext } from "react";
+import React, { useState, useEffect, useContext, createContext, useCallback } from "react";
 import { signInWithPopup, GithubAuthProvider, getAuth, User } from "firebase/auth";
 import { selectUser } from "@/store/store";
 import { signIn as signInAction, signOut as signOutAction, refreshToken } from "@/store/user/userSlice";
@@ -7,9 +7,7 @@ import { push } from "connected-react-router";
 
 type AuthContext = ReturnType<typeof useFirebaseAuth>;
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-const authContext = createContext<AuthContext>(null);
+const authContext = createContext<AuthContext>({} as AuthContext);
 
 const formatUser = async (user: User) => {
   const { token, expirationTime } = await user.getIdTokenResult(true);
@@ -56,7 +54,7 @@ const useFirebaseAuth = () => {
     setLoading(false);
   };
 
-  const signOut = () => auth.signOut();
+  const signOut = useCallback(() => auth.signOut(), [auth]);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (maybeUser) => {
@@ -66,7 +64,7 @@ const useFirebaseAuth = () => {
       }
     });
     return () => unsubscribe();
-  }, []);
+  }, [auth, dispatch]);
 
   useEffect(() => {
     window.addEventListener("focus", () => {
@@ -91,7 +89,7 @@ const useFirebaseAuth = () => {
     if (current.getTime() > expirationTime.getTime()) {
       signOut();
     }
-  }, [appUser]);
+  }, [appUser, auth, dispatch, signOut]);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -109,7 +107,7 @@ const useFirebaseAuth = () => {
     }, 100000);
 
     return () => clearInterval(id);
-  }, []);
+  }, [appUser, auth, dispatch]);
 
   return {
     loading,

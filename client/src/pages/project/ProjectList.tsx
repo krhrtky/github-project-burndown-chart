@@ -16,10 +16,6 @@ export const ProjectList: React.VFC = () => {
     },
   });
 
-  if (!user.authenticated) {
-    return null;
-  }
-
   useEffect(() => {
     fetchOrgs({
       variables: {
@@ -27,7 +23,11 @@ export const ProjectList: React.VFC = () => {
         after: null,
       },
     });
-  }, []);
+  }, [fetchOrgs]);
+
+  if (!user.authenticated) {
+    return null;
+  }
 
   return loading ? (
     <Loading size="large" />

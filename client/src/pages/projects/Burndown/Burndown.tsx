@@ -39,7 +39,7 @@ export const Burndown: React.VFC = () => {
       .then((res) => setCharts(res))
       .catch((e: Error) => e.message)
       .finally(() => setLoading(false));
-  }, []);
+  }, [projectId, user.authenticated, user]);
 
   if (!user.authenticated) {
     return null;
