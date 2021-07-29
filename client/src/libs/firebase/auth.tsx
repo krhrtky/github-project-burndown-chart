@@ -76,7 +76,7 @@ const useFirebaseAuth = () => {
       }
       const current = new Date();
       const expirationTime = new Date(appUser.expirationTime);
-      if (current.getTime() > expirationTime.getTime()) {
+      if (current.getTime() < expirationTime.getTime()) {
         return;
       }
       signOut();
