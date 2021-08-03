@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-
 import { useDispatch } from "react-redux";
 import { push } from "connected-react-router";
 import { Route, useParams, useRouteMatch } from "react-router-dom";
-import { Tabs, useTabs } from "@geist-ui/react";
-import { BurndownRoute } from "./Burndown/BurndownRoute";
+import { Button, Tabs, useTabs } from "@geist-ui/react";
+import { ChevronLeft } from "@geist-ui/react-icons";
 import { ProjectsDetailRoot } from "./ProjectDetailRoot";
+import { BurndownRoute } from "./Burndown/BurndownRoute";
 
 const Container: React.VFC = () => {
   const dispatch = useDispatch();
@@ -22,7 +22,10 @@ const Container: React.VFC = () => {
   }, [isBurndownPage, setState]);
 
   return (
-    <>
+    <div>
+      <Button auto size="small" icon={<ChevronLeft />} onClick={() => dispatch(push("/project/select"))}>
+        Projects
+      </Button>
       <Tabs
         {...bindings}
         onChange={(val) => {
@@ -40,7 +43,7 @@ const Container: React.VFC = () => {
         <ProjectsDetailRoot />
         <BurndownRoute />
       </div>
-    </>
+    </div>
   );
 };
 
