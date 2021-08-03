@@ -12,6 +12,7 @@ import { ConnectedRouter } from "connected-react-router";
 import { ProjectRoot } from "@/pages/project/ProjectRoot";
 import { PersistGate } from "redux-persist/integration/react";
 import { ProjectsRoot } from "@/pages/projects/ProjectsRoute";
+import { Header } from "@/components/layout/Header";
 
 initializeFirebase();
 const cache = new InMemoryCache();
@@ -30,7 +31,7 @@ const App = () => {
               <CssBaseline />
               <Page size="medium">
                 <Page.Header>
-                  <h2>GitHub Project Burndown</h2>
+                  <Header />
                 </Page.Header>
                 <Divider y={0} />
                 <Page.Content style={{ padding: "16pt 0", overflowY: "hidden" }}>
