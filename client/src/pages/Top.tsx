@@ -1,28 +1,31 @@
 import React from "react";
+import { Button, Loading, Grid } from "@geist-ui/react";
+import { push } from "connected-react-router";
+import { useDispatch } from "react-redux";
 import { useAuth } from "@/libs/firebase/auth";
-import { Link } from "react-router-dom";
+import { Github } from "@geist-ui/react-icons";
 
 export const Top: React.VFC = () => {
-  const { user, signIn, signOut, loading } = useAuth();
+  const dispatch = useDispatch();
+  const { user, signIn, loading } = useAuth();
 
-  if (loading) {
-    return <div>loading...</div>;
+  if (user.authenticated) {
+    dispatch(push("/project/select"));
   }
 
   return (
-    <>
-      <h2>Hello, Everyone.</h2>
-      <p>This is a simulated page, you can click anywhere to close it.</p>
-      <Link to="/project/select">projects</Link>
-      {user.authenticated ? (
-        <button type="button" onClick={signOut}>
-          signOut
-        </button>
-      ) : (
-        <button type="button" onClick={signIn}>
-          signIn
-        </button>
-      )}
-    </>
+    <Grid.Container justify="center" alignItems="center" style={{ height: "70vh" }}>
+      <Grid xs />
+      <Grid xs>
+        {loading ? (
+          <Loading size="large" />
+        ) : (
+          <Button icon={<Github />} onClick={signIn} type="secondary">
+            Login
+          </Button>
+        )}
+      </Grid>
+      <Grid xs />
+    </Grid.Container>
   );
 };
