@@ -33,8 +33,8 @@ const App = () => {
                   <h2>GitHub Project Burndown</h2>
                 </Page.Header>
                 <Divider y={0} />
-                <ConnectedRouter history={history}>
-                  <Page.Content style={{ padding: "16pt 0", overflowY: "hidden" }}>
+                <Page.Content style={{ padding: "16pt 0", overflowY: "hidden" }}>
+                  <ConnectedRouter history={history}>
                     <Switch>
                       <Route exact path="/">
                         <Top />
@@ -44,8 +44,8 @@ const App = () => {
                       </Route>
                       <ProjectsRoot />
                     </Switch>
-                  </Page.Content>
-                </ConnectedRouter>
+                  </ConnectedRouter>
+                </Page.Content>
               </Page>
             </GeistProvider>
           </AuthProvider>
