@@ -1,16 +1,14 @@
 import React from "react";
 import { Button, Loading, Grid } from "@geist-ui/react";
-import { push } from "connected-react-router";
-import { useDispatch } from "react-redux";
+import { Redirect } from "react-router-dom";
 import { useAuth } from "@/libs/firebase/auth";
 import { Github } from "@geist-ui/react-icons";
 
 export const Top: React.VFC = () => {
-  const dispatch = useDispatch();
   const { user, signIn, loading } = useAuth();
 
   if (user.authenticated) {
-    dispatch(push("/project/select"));
+    return <Redirect to="/project/select" />;
   }
 
   return (

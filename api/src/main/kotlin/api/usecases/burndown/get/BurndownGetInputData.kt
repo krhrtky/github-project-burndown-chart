@@ -4,5 +4,6 @@ import java.time.LocalDateTime
 
 data class BurndownGetInputData(
     val projectId: String,
-    val calculateFrom: LocalDateTime?,
+    val from: LocalDateTime?,
+    val to: LocalDateTime?,
 )

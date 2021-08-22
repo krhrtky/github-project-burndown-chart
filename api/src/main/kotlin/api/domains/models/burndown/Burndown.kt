@@ -3,28 +3,23 @@ package api.domains.models.burndown
 import api.domains.models.project.ProjectId
 import api.domains.models.task.Task
 import api.domains.models.task.TaskPokoBuilder
-import com.samuraism.bc4j.BusinessCalendar
-import com.samuraism.bc4j.Japan
+import api.domains.models.types.BusinessCalendar
 import java.time.LocalDate
 
 data class Burndown(
     private val projectId: ProjectId,
     private val taskList: List<Task>,
 ) {
-    private val calendar = BusinessCalendar
-        .newBuilder()
-        .holiday(BusinessCalendar.CLOSED_ON_SATURDAYS_AND_SUNDAYS)
-        .holiday(Japan.PUBLIC_HOLIDAYS)
-        .build()
+    private val calendar = BusinessCalendar.default
 
-    fun chartFrom(from: LocalDate = LocalDate.now().minusMonths(1)): BurndownChart {
-        val businessDays = (from..calendar.lastBusinessDay())
+    fun chartByDateRange(from: LocalDate, to: LocalDate): BurndownChart {
+        val businessDays = (from..to.plusDays(1))
             .filter { calendar.isBusinessDay(it) }
 
         val ideal = businessDays
             .mapIndexed { index, day ->
                 val totalPointAtThatTime = taskList
-                    .filter { it.isAddedAt(day) }
+                    .filter { it.isDigestibleDate(day) }
                     .sumOf {
                         TaskPokoBuilder()
                             .extract(it)
@@ -38,25 +33,21 @@ data class Burndown(
 
         val finishedEstimatePointCharts = businessDays
             .map { day ->
-                val totalPointAtThatTime = taskList
+//                val totalPointAtThatTime =
+                taskList
+                    .filter { it.isExistsWithinPeriod(day, businessDays.last()) }
                     .filter { it.isAddedAt(day) }
                     .sumOf {
                         TaskPokoBuilder()
                             .extract(it)
-                            .build().estimateStoryPoint
-                    }
-                totalPointAtThatTime - taskList
-                    .filter { it.isFinishedAt(day) }
-                    .sumOf {
-                        TaskPokoBuilder()
-                            .extract(it)
-                            .build().estimateStoryPoint
+                        .build().estimateStoryPoint
                     }
             }
 
         val finishedEstimate = businessDays
             .map { day ->
                 taskList
+                    .filter { it.isExistsWithinPeriod(day, businessDays.last()) }
                     .filter { it.isFinishedAt(day) }
                     .sumOf {
                         TaskPokoBuilder()
@@ -68,6 +59,7 @@ data class Burndown(
         val finishedResult = businessDays
             .map { day ->
                 taskList
+                    .filter { it.isExistsWithinPeriod(day, businessDays.last()) }
                     .filter { it.isFinishedAt(day) }
                     .mapNotNull {
                         TaskPokoBuilder()

@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import java.time.LocalDateTime
+import java.time.ZoneId
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -63,12 +65,14 @@ class ProjectController(
     @GetMapping("/projects/{projectId}/burndown")
     fun burndown(
         @PathVariable projectId: String,
-        @RequestParam("calculateFrom") calculateFrom: LocalDateTime?
+        @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) from: LocalDateTime?,
+        @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) to: LocalDateTime?
     ): Mono<BurndownGetOutputData> = burndownGetUseCase
         .handle(
             BurndownGetInputData(
                 projectId,
-                calculateFrom,
+                from?.atZone(ZoneId.of("Asia/Tokyo"))?.toLocalDateTime(),
+                to?.atZone(ZoneId.of("Asia/Tokyo"))?.toLocalDateTime(),
             )
         ).handle { result, sink ->
             when (result) {

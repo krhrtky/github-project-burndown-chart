@@ -45,8 +45,19 @@ data class Task constructor(
         finishedAt = finishedAt,
     )
 
+    fun isCountableDate(date: LocalDate) = addedAt.value.toLocalDate().isEqual(date) ||
+            addedAt.value.toLocalDate().isBefore(date)
+
+    fun isDigestibleDate(date: LocalDate) = addedAt.value.toLocalDate().isBefore(date)
+
     fun isAddedAt(date: LocalDate) = addedAt.value.toLocalDate().isEqual(date) ||
             addedAt.value.toLocalDate().isBefore(date)
+
+    fun isExistsWithinPeriod(from: LocalDate, to: LocalDate) = (
+            addedAt.value.toLocalDate().isEqual(from) || addedAt.value.toLocalDate().isBefore(from)
+            ) && (
+            addedAt.value.toLocalDate().isEqual(to) || addedAt.value.toLocalDate().isAfter(to)
+            )
 
     fun isFinished(): Boolean = resultStoryPoint != null && finishedAt != null
     fun isFinishedAt(date: LocalDate): Boolean {
