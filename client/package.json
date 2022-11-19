@@ -16,7 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "@apollo/client": "^3.3.19",
-    "@geist-ui/react": "^2.1.5",
+    "@geist-ui/react": "^2.2.5",
     "@geist-ui/react-icons": "^1.0.1",
     "@reduxjs/toolkit": "^1.5.1",
     "@types/react-infinite-scroller": "^1.2.1",
