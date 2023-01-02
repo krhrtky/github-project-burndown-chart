@@ -16,7 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "@apollo/client": "^3.3.19",
-    "@geist-ui/react": "^2.1.5",
+    "@geist-ui/react": "^2.2.5",
     "@geist-ui/react-icons": "^1.0.1",
     "@reduxjs/toolkit": "^1.5.1",
     "@types/react-infinite-scroller": "^1.2.1",
@@ -48,7 +48,7 @@
     "@types/webpack-dev-server": "^3.11.4",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
-    "babel-loader": "^8.2.2",
+    "babel-loader": "^8.3.0",
     "babel-preset-react-app": "^10.0.0",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
     "eslint": "^7.30.0",
