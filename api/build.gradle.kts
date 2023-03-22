@@ -24,7 +24,7 @@ repositories {
     mavenCentral()
 }
 
-extra["springCloudGcpVersion"] = "2.0.0"
+extra["springCloudGcpVersion"] = "2.0.11"
 extra["springCloudVersion"] = "2020.0.2"
 
 dependencies {
