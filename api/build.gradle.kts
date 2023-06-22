@@ -50,7 +50,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("com.ninja-squad:springmockk:2.0.1")
+    testImplementation("com.ninja-squad:springmockk:2.0.3")
     testImplementation("io.kotest:kotest-runner-junit5:4.5.0")
     testImplementation("io.mockk:mockk:1.11.0")
     testImplementation("io.kotest:kotest-extensions-spring:4.4.3")
