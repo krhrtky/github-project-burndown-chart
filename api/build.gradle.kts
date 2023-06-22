@@ -28,7 +28,7 @@ extra["springCloudGcpVersion"] = "2.0.0"
 extra["springCloudVersion"] = "2020.0.2"
 
 dependencies {
-    implementation(platform("io.arrow-kt:arrow-stack:0.13.2"))
+    implementation(platform("io.arrow-kt:arrow-stack:0.13.3"))
     implementation("io.arrow-kt:arrow-core")
     implementation("io.arrow-kt:arrow-fx-coroutines")
     implementation("org.springframework.boot:spring-boot-starter-security")
